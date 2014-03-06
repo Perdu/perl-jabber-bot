@@ -22,10 +22,15 @@ my $file_quotes = "quotes.txt";
 my @quotes;
 @quotes = read_file($file_quotes);
 
-my $room = "ensimag";
+my $room = "test";
 
 # Informations concernant le Bot :
 # my $version = '1.0';
+
+# Probability of talking.
+# Defaults to 0, gains 0.1 every message. Can be decreased when the bot is told
+# to shut up.
+my $p = 0;
 
 my $Con = new Net::Jabber::Client();
 my $prev_msg = "";
@@ -139,6 +144,8 @@ sub on_public
 	    $prev_nick = $nick;
     }
 
+    $p += 1;
+
     if ($text =~ /!help/) {
 	my $mess2 = "Commandes disponibles :";
 	message($mess2);
@@ -177,7 +184,7 @@ sub on_public
 	$mess = "A propos de $1... $nick, tu veux pas sucer la mienne ?";
     } elsif ($text =~ /(?:^|\W)je suis (.*)\./i) {
 	$mess = "Les $1 sont vraiment des connards.";
-    } elsif (int(rand(10)) == 0) {
+    } elsif (int(rand(10)) < $p) {
 	$mess = $quotes[rand(scalar(@quotes))];
 	utf8::decode($mess);
 #	$mess = "tg fdp de $nick.";
@@ -246,6 +253,7 @@ sub on_disconnect {
 sub message {
 	my $body = shift;
 	my $msg = Net::Jabber::Message->new();
+	$p = 0;
 	$msg->SetMessage(
 		"type" => "groupchat",
 		"to" => "$room\@$server",
