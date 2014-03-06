@@ -23,6 +23,9 @@ my @quotes;
 @quotes = read_file($file_quotes);
 
 my $room = "test";
+if (@ARGV > 0) {
+	$room = shift;
+}
 
 # Informations concernant le Bot :
 # my $version = '1.0';
