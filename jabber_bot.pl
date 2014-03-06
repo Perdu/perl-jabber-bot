@@ -107,8 +107,9 @@ sub on_public
     ($resource, $nick) = split('/', $nick);
 
     # Ugly workaround to the fact that backlog messages are considered as
-    # normal messages: ignores messages during the first 2 seconds
-    if (time() < $join_time + 2) {
+    # normal messages: ignores messages during the first 5 seconds (a raspberry
+    # pi is slow)
+    if (time() < $join_time + 5) {
 	    return;
     }
 
