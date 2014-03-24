@@ -18,9 +18,20 @@ my $pass = "skldv,slklmLKJsdkf9078";
 my $quiet = 0;
 my $ignore_msg = 0;
 
-my $file_quotes = "quotes.txt";
+my $dir_quotes = "quotes";
 my @quotes;
-@quotes = read_file($file_quotes);
+
+opendir(DIR, $dir_quotes) or die "cannot open directory $indirname";
+my @docs = grep(/\.txt$/,readdir(Dir));
+foreach $d (@docs) {
+    $full_dir = "$dir_quotes/$d";
+    open (my res, $full_dir) or die "could not open $full_dir";
+    while(<res>){
+	    @quotes = read_file($file_quotes);
+	    # todo: array of arrays
+
+    }
+}
 
 my $room = "test";
 if (@ARGV > 0) {
