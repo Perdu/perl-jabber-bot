@@ -174,8 +174,6 @@ sub on_public
 	    $prev_nick = $nick;
     }
 
-    $p += 1;
-
     if ($text =~ /!help/) {
 	my $mess2 = "Commandes disponibles :";
 	message($mess2);
@@ -214,12 +212,17 @@ sub on_public
 	$mess = "A propos de $1... $nick, tu veux pas sucer la mienne ?";
     } elsif ($text =~ /(?:^|\W)je suis (.*)\./i) {
 	$mess = "Les $1 sont vraiment des connards.";
-    } elsif (int(rand(10)) < $p) {
-	    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random)
-	    # in other words, number of quotes in quotes.txt
-	$mess = $quotes[$index_random][rand(scalar @{ $quotes[$index_random] })];
-	utf8::decode($mess);
-#	$mess = "tg fdp de $nick.";
+    } else {
+	    $p += 1;
+	    my $rand = int(rand(100));
+	    print "$rand, $p\n";
+	    if ($rand < $p) {
+		    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random)
+		    # in other words, number of quotes in quotes.txt
+		    $mess = $quotes[$index_random][rand(scalar @{ $quotes[$index_random] })];
+		    utf8::decode($mess);
+		    #	$mess = "tg fdp de $nick.";
+	    }
     }
     if ($mess ne "") {
 	message($mess);
