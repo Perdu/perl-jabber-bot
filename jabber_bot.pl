@@ -85,7 +85,7 @@ my $join_time = time();
 
 # "message" => \&on_public,
 # Install hook functions:
-$Con->SetCallBacks("presence" => \&on_other_join);
+# $Con->SetCallBacks("presence" => \&on_other_join);
 $Con->SetMessageCallBacks("groupchat"=>\&on_public);
 
 while(defined($Con->Process())) {}
