@@ -21,16 +21,32 @@ my $ignore_msg = 0;
 my $dir_quotes = "quotes";
 my @quotes;
 
-opendir(DIR, $dir_quotes) or die "cannot open directory $indirname";
-my @docs = grep(/\.txt$/,readdir(Dir));
-foreach $d (@docs) {
-    $full_dir = "$dir_quotes/$d";
-    open (my res, $full_dir) or die "could not open $full_dir";
-    while(<res>){
-	    @quotes = read_file($file_quotes);
+my $index_random;
+
+opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
+my @docs = grep(/\.txt$/,readdir($DIR));
+my $file_count = 0;
+foreach my $d (@docs) {
+	if ($d eq "quotes.txt") {
+		$index_random = $file_count;
+	}
+    my $full_path = "$dir_quotes/$d";
+    open (my $res, $full_path) or die "could not open $full_path";
+    # First line is special
+    $quotes[$file_count][0] = <$res>;
+    my $i = 1;
+    while(<$res>){
+	    $quotes[$file_count][$i] = $_;
+	    $i++;
 	    # todo: array of arrays
 
     }
+    $file_count++;
+}
+
+if (!defined $index_random) {
+	print STDERR "quotes.txt not found\n";
+	exit 1;
 }
 
 my $room = "test";
@@ -199,7 +215,9 @@ sub on_public
     } elsif ($text =~ /(?:^|\W)je suis (.*)\./i) {
 	$mess = "Les $1 sont vraiment des connards.";
     } elsif (int(rand(10)) < $p) {
-	$mess = $quotes[rand(scalar(@quotes))];
+	    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random)
+	    # in other words, number of quotes in quotes.txt
+	$mess = $quotes[$index_random][rand(scalar @{ $quotes[$index_random] })];
 	utf8::decode($mess);
 #	$mess = "tg fdp de $nick.";
     }
