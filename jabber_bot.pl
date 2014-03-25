@@ -221,9 +221,10 @@ sub on_public
 		    # in other words, number of quotes in quotes.txt
 		    $mess = $quotes[$index_random][rand(scalar @{ $quotes[$index_random] })];
 		    utf8::decode($mess);
+		    chomp($mess);
 		    #	$mess = "tg fdp de $nick.";
 	    }
-    }
+#    }
     if ($mess ne "") {
 	message($mess);
     }
