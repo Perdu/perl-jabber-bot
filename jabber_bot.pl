@@ -202,6 +202,7 @@ sub on_public
 	my $res = $1;
 	my $scale = ($res =~ /\//)? "scale=3; " : "";
 	$mess = "$res = " . `echo "$scale$res" | bc`;
+	chomp($mess);
     } #elsif ($text =~ /(?:^|\W)(connard|pd|pédé|fdp|gay|retardé|mac-user|con|
 #                        débile|polard|noob)(?:\W|$)/ix) {
 #	$mess = "C'est toi le $1 $nick.";
