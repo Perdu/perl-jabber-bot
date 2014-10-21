@@ -8,6 +8,10 @@ use utf8;
 use Net::Jabber qw(Client);
 use File::Slurp;
 
+# Dépendances :
+# libnet-jabber-perl
+# libfile-slurp-perl
+
 # Configuration des options de connexion (serveur, login) :
 my $server = 'chat.jabberfr.org';
 my $con_server = 'im.apinc.org';
