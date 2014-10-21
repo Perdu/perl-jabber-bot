@@ -54,7 +54,7 @@ if (!defined $index_random) {
 	exit 1;
 }
 
-my $room = "test";
+my $room = "ensimag";
 if (@ARGV > 0) {
 	$room = shift;
 }
