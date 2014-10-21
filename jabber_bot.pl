@@ -15,7 +15,8 @@ use File::Slurp;
 # Configuration des options de connexion (serveur, login) :
 my $server = 'chat.jabberfr.org';
 my $con_server = 'im.apinc.org';
-my $own_nick = 'discussiondiscussion';
+my $login = 'discussiondiscussion';
+my $own_nick = 'anu';
 my $nb = 0; # bot number
 my $admin = 'Perdu';
 my $pass = "skldv,slklmLKJsdkf9078";
