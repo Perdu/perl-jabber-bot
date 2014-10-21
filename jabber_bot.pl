@@ -192,7 +192,7 @@ sub on_public
 #    }
 
     if ($text =~ /([-]?[A-F\d]+\s*([+\-*\/^]\s*[+-]?[A-F\d]+\s*)+)/) {
-	my $res = $1; 
+	my $res = $1;
 	my $scale = ($res =~ /\//)? "scale=3; " : "";
 	$mess = "$res = " . `echo "$scale$res" | bc`;
     } #elsif ($text =~ /(?:^|\W)(connard|pd|pédé|fdp|gay|retardé|mac-user|con|
