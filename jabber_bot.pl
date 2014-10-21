@@ -193,29 +193,29 @@ sub on_public
 
     if ($text =~ /([-]?[A-F\d]+\s*([+\-*\/^]\s*[+-]?[A-F\d]+\s*)+)/) {
 	my $res = $1; 
-	my $scale = ($res =~ /\//)? "scale=3; " : ""; 
+	my $scale = ($res =~ /\//)? "scale=3; " : "";
 	$mess = "$res = " . `echo "$scale$res" | bc`;
-    } elsif ($text =~ /(?:^|\W)(connard|pd|pédé|fdp|gay|retardé|mac-user|con|
-                        débile|polard|noob)(?:\W|$)/ix) {
-	$mess = "C'est toi le $1 $nick.";
-    } elsif ($text =~ /(?:^|\W)(enculé|enculay|enculasse|enfoiré|enflure|
-                                homosexuel|attardé|autiste|trisomique|abruti
-                        )(?:\W|$)/ix) {
-	$mess = "C'est toi l'$1 $nick.";
-    } elsif ($text =~ /(?:^|\W)(tafiole|tapette|tata|conne|pute|salope|merde|
-                        putain|crevure|enflure|pétasse|tepu|teupu)(?:\W|$)/ix) {
-	$mess = "C'est toi la $1 $nick.";
-    } elsif ($text =~ /(?:^|\W)$own_nick(?:\W|$)/i) {
-	$mess = "N'ose même pas m'adresser la parole, sale sous-merde de $nick.";
-    } elsif ($text =~ /(?:^|\W)(windows|mac)(?:\W|$)/i) {
-	$mess = "Aaah $1 c'est caca.";
-    } elsif ($text =~ /(?:juif|nazi|hitler|nsdap|sieg|heil)/i) {
-	$mess = "ARBEIT MACHT FREI !";
-    } elsif ($text =~ /(?:^|\W)(bite|teub)(?:\W|$)/i) {
-	$mess = "A propos de $1... $nick, tu veux pas sucer la mienne ?";
-    } elsif ($text =~ /(?:^|\W)je suis (.*)\./i) {
-	$mess = "Les $1 sont vraiment des connards.";
-    } else {
+    } #elsif ($text =~ /(?:^|\W)(connard|pd|pédé|fdp|gay|retardé|mac-user|con|
+#                        débile|polard|noob)(?:\W|$)/ix) {
+#	$mess = "C'est toi le $1 $nick.";
+#    } elsif ($text =~ /(?:^|\W)(enculé|enculay|enculasse|enfoiré|enflure|
+#                                homosexuel|attardé|autiste|trisomique|abruti
+#                        )(?:\W|$)/ix) {
+#	$mess = "C'est toi l'$1 $nick.";
+#    } elsif ($text =~ /(?:^|\W)(tafiole|tapette|tata|conne|pute|salope|merde|
+#                        putain|crevure|enflure|pétasse|tepu|teupu)(?:\W|$)/ix) {
+#	$mess = "C'est toi la $1 $nick.";
+#    } elsif ($text =~ /(?:^|\W)$own_nick(?:\W|$)/i) {
+#	$mess = "N'ose même pas m'adresser la parole, sale sous-merde de $nick.";
+#    } elsif ($text =~ /(?:^|\W)(windows|mac)(?:\W|$)/i) {
+#	$mess = "Aaah $1 c'est caca.";
+#    } elsif ($text =~ /(?:juif|nazi|hitler|nsdap|sieg|heil)/i) {
+#	$mess = "ARBEIT MACHT FREI !";
+#    } elsif ($text =~ /(?:^|\W)(bite|teub)(?:\W|$)/i) {
+#	$mess = "A propos de $1... $nick, tu veux pas sucer la mienne ?";
+#    } elsif ($text =~ /(?:^|\W)je suis (.*)\./i) {
+#	$mess = "Les $1 sont vraiment des connards.";
+#    } else {
 	    $p += 1;
 	    my $rand = int(rand(100));
 	    print "$rand, $p\n";
