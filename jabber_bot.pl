@@ -180,13 +180,20 @@ sub on_public
     }
 
     if ($text =~ /!help/) {
-	my $mess2 = "Commandes disponibles :\n";
-	$mess2 .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
-	$mess2 .= "- !help : affiche cette aide.";
-	message($mess2);
-	return;
+	    my $mess2 = "Commandes disponibles :\n";
+	    $mess2 .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
+	    $mess2 .= "- !help : affiche cette aide.\n";
+	    $mess2 .= "- !battle : sélectionne un choix au hasard.";
+	    message($mess2);
+	    return;
     }
 
+    if ($text =~ /^!battle (.*)/) {
+	    my @choices = split(' ', $1);
+	    my $rand = rand(scalar @choices);
+	    message("$nick : " . $choices[$rand]);
+	    return;
+    }
 #    if (int(rand(10)) < 8) {
 #	    return;
 #    }
