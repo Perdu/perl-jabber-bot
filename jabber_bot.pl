@@ -82,7 +82,7 @@ if($Con->Connected()) {
 	exit 1;
 }
 
-my @result = $Con->AuthSend(username => $own_nick,
+my @result = $Con->AuthSend(username => $login,
 			    password => $pass,
 			    resource => "Bot"
 		    );
