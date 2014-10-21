@@ -180,11 +180,9 @@ sub on_public
     }
 
     if ($text =~ /!help/) {
-	my $mess2 = "Commandes disponibles :";
-	message($mess2);
-	$mess2 = "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.";
-	message($mess2);
-	$mess2 = "- !help : affiche cette aide.";
+	my $mess2 = "Commandes disponibles :\n";
+	$mess2 .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
+	$mess2 .= "- !help : affiche cette aide.";
 	message($mess2);
 	return;
     }
