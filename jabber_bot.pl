@@ -257,9 +257,9 @@ sub on_other_join
     print "  Status: $status ($show)\n";
     print "===\n";
 
-   if ($from ne $own_nick) {
-       message("Vas-y casse-toi enculaÿ de $from.");
-   }
+#   if ($from ne $own_nick) {
+#       message("Vas-y casse-toi enculaÿ de $from.");
+#   }
 }
 
 sub on_private
