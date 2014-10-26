@@ -7,6 +7,7 @@ use utf8;
 
 use Net::Jabber qw(Client);
 use File::Slurp;
+use Storable;
 
 # Dépendances :
 # libnet-jabber-perl
@@ -23,11 +24,17 @@ my $admin = 'Perdu';
 my $pass = "skldv,slklmLKJsdkf9078";
 my $quiet = 0;
 my $ignore_msg = 0;
+my $joke_points_file = "points_blague";
 
 my $dir_quotes = "quotes";
 my @quotes;
 
 my $index_random;
+my $joke_points;
+
+if (-f $joke_points_file) {
+	$joke_points = retrieve($joke_points_file);
+}
 
 opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
 my @docs = grep(/\.txt$/,readdir($DIR));
@@ -183,6 +190,7 @@ sub on_public
 	    my $mess2 = "Commandes disponibles :\n";
 	    $mess2 .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
 	    $mess2 .= "- !help : affiche cette aide.\n";
+	    $mess2 .= "- !pb : affiche les points-blague\n";
 	    $mess2 .= "- !battle : sélectionne un choix au hasard.";
 	    message($mess2);
 	    return;
@@ -197,6 +205,25 @@ sub on_public
 #    if (int(rand(10)) < 8) {
 #	    return;
 #    }
+
+    if (($text =~ /:([Dd]+)/) ){#&& ($prev_nick ne $nick)) {
+	    my $nb_d = length $1;
+	    $joke_points->{$prev_nick} += $nb_d;
+	    print "+$nb_d points blague pour $prev_nick (" . $joke_points->{$prev_nick} . ")";
+	    return;
+    }
+
+    if ($text =~ /^!pb/) {
+	    my $msg ="";
+	    return if (!defined $joke_points);
+	    foreach my $k (keys $joke_points) {
+		    print "k: " . $k;
+		    $msg .= "$k: $joke_points->{$k} points\n";
+	    }
+	    chomp($msg);
+	    message($msg);
+	    return;
+    }
 
     if ($text =~ /^([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
 	    $mess = "Sale ped";
@@ -318,5 +345,6 @@ sub message {
 sub Stop {
     print "Exiting...\n";
     $Con->Disconnect();
+    store($joke_points, $joke_points_file);
     exit(0);
 }
