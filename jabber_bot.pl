@@ -229,14 +229,14 @@ sub on_public
 	    $p += 1;
 	    my $rand = int(rand(100));
 	    print "$rand, $p\n";
-	    if ($rand < $p) {
+#	    if ($rand < $p) {
 		    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random)
 		    # in other words, number of quotes in quotes.txt
-		    $mess = $quotes[$index_random][rand(scalar @{ $quotes[$index_random] })];
-		    utf8::decode($mess);
-		    chomp($mess);
+#		    $mess = $quotes[$index_random][rand(scalar @{ $quotes[$index_random] })];
+#		    utf8::decode($mess);
+#		    chomp($mess);
 		    #	$mess = "tg fdp de $nick.";
-	    }
+#	    }
 #    }
     if ($mess ne "") {
 	message($mess);
