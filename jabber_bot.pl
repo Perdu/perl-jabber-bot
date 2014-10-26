@@ -14,6 +14,7 @@ use File::Slurp;
 
 # Configuration des options de connexion (serveur, login) :
 my $server = 'chat.jabberfr.org';
+my $room = "ensimag"; # also first param
 my $con_server = 'im.apinc.org';
 my $login = 'discussiondiscussion';
 my $own_nick = 'anu';
@@ -54,7 +55,6 @@ if (!defined $index_random) {
 	exit 1;
 }
 
-my $room = "ensimag";
 if (@ARGV > 0) {
 	$room = shift;
 }
