@@ -310,6 +310,7 @@ sub message {
 
 );
 	$Con->Send($msg);
+	print "<$own_nick> | " . $body;
 #	$Con->MessageSend(to => $room . $server,
 #			  body => $msg);
 }
