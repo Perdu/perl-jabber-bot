@@ -188,7 +188,7 @@ sub on_public
 
     if ($text =~ /!help/) {
 	    my $mess2 = "Commandes disponibles :\n";
-	    $mess2 .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
+#	    $mess2 .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
 	    $mess2 .= "- !help : affiche cette aide.\n";
 	    $mess2 .= "- !pb : affiche les points-blague\n";
 	    $mess2 .= "- !battle : sélectionne un choix au hasard.";
