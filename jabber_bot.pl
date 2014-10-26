@@ -10,8 +10,8 @@ use File::Slurp;
 use Storable;
 
 # Dépendances :
-# libnet-jabber-perl
-# libfile-slurp-perl
+# libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
+# libfile-slurp-perl (Debian) / perl-file-slurp (archlinux)
 
 # Configuration des options de connexion (serveur, login) :
 my $server = 'chat.jabberfr.org';
