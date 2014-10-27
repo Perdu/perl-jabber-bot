@@ -196,7 +196,7 @@ sub on_public
     } elsif ($text eq "!pb") {
 	    return if (!defined $joke_points);
 	    foreach my $k (keys $joke_points) {
-		    $mess .= "$k: $joke_points->{$k} points\n";
+		    $mess .= "_$k: $joke_points->{$k} points\n";
 	    }
 	    chomp($mess);
     } elsif ($text =~ /^([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
