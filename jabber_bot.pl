@@ -200,7 +200,7 @@ sub on_public
 	    }
 	    chomp($mess);
     } elsif ($text =~ /^([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
-	    $mess = "Sale ped";
+	    $mess = "VTFF";
     } elsif ($text =~ /([-]?[A-F\d]+\s*([+\-*\/]\s*[+-]?[A-F\d]+\s*)+)/) {
 	my $res = $1;
 	my $scale = ($res =~ /\//)? "scale=3; " : "";
