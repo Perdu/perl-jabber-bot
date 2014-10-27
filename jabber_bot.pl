@@ -218,7 +218,6 @@ sub on_public
 	    my $msg ="";
 	    return if (!defined $joke_points);
 	    foreach my $k (keys $joke_points) {
-		    print "k: " . $k;
 		    $msg .= "$k: $joke_points->{$k} points\n";
 	    }
 	    chomp($msg);
@@ -256,7 +255,7 @@ sub on_public
 #    } else {
 	    $p += 1;
 	    my $rand = int(rand(100));
-	    print "$rand, $p\n";
+	    #print "$rand, $p\n";
 #	    if ($rand < $p) {
 		    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random)
 		    # in other words, number of quotes in quotes.txt
