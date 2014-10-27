@@ -198,6 +198,7 @@ sub on_public
 	    return if (!defined $joke_points);
 	    foreach my $k (sort { $joke_points->{$b} <=> $joke_points->{$a} } keys $joke_points) {
 		    my $tmp = $k;
+		    # Add underscore in the middle of nicks when listing joke points
 		    $tmp =~ s/(.)(.*)/$1_$2/;
 		    $mess .= "$tmp: $joke_points->{$k} points\n";
 	    }
