@@ -113,8 +113,8 @@ my $join_time = time();
 
 # "message" => \&on_public,
 # Install hook functions:
-# $Con->SetCallBacks("presence" => \&on_other_join);
-$Con->SetMessageCallBacks("groupchat"=>\&on_public);
+$Con->SetCallBacks("presence" => \&on_other_join);
+$Con->SetMessageCallBacks("groupchat"=>\&on_public, "chat"=>\&on_private);
 
 while(defined($Con->Process())) {}
 
@@ -282,13 +282,22 @@ sub on_other_join
 
 sub on_private
 {
-    my ($conn, $event) = @_;
-    my $text = $event->{'args'}[0];
+    shift;
+    my $message = shift;
+    my $text = $message->GetBody();
+    my $nick = $message->GetFrom();
+
+    print "Private message from $nick: $text\n";
     if ($text =~ /^!ins (\w+) (.*)/) {
-	message($1, "Quelqu'un vous fait savoir qu'il pense que vous êtes un(e) vrai(e) $2."); 
-    } #else {
-#	message($event->{'nick'}, "vtff $event->{'nick'}");
-#    }
+	priv_message($nick, "Quelqu'un vous fait savoir qu'il pense que vous êtes un(e) vrai(e) $2.");
+    }
+    if ($nick eq "$room\@$server/$admin") {
+	    if ($text eq "!save") {
+		    store($joke_points, $joke_points_file);
+		    print "Points blague sauvegardés.\n";
+	    }
+    }
+
 }
 
 sub on_other_part
@@ -307,20 +316,31 @@ sub on_disconnect {
     $self->connect();
 }
 
-sub message {
+sub message_send {
+	my $dest = shift;
 	my $body = shift;
 	my $msg = Net::Jabber::Message->new();
 	$p = 0;
 	$msg->SetMessage(
 		"type" => "groupchat",
-		"to" => "$room\@$server",
+		"to" => "$dest",
 		"body" => $body,
 
 );
 	$Con->Send($msg);
 	print "<$own_nick> | " . $body . "\n";
-#	$Con->MessageSend(to => $room . $server,
-#			  body => $msg);
+}
+
+
+sub message {
+	my $body = shift;
+	message_send("$room\@$server", $body);
+}
+
+sub priv_message {
+	my $dest = shift;
+	my $body = shift;
+	message_send($dest, $body);
 }
 
 sub Stop {
