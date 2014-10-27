@@ -180,7 +180,7 @@ sub on_public
     if ($prev_msg eq $text && $prev_nick ne $nick) {
 	    message($text);
 	    $prev_nick = $nick;
-    } elsif ($text =~ /!help/) {
+    } elsif ($text eq "!help") {
 	    my $mess2 = "Commandes disponibles :\n";
 #	    $mess2 .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
 	    $mess2 .= "- !help : affiche cette aide.\n";
@@ -195,7 +195,7 @@ sub on_public
 	    my $nb_d = length $1;
 	    $joke_points->{$prev_nick} += $nb_d;
 	    print "+$nb_d points blague pour $prev_nick (" . $joke_points->{$prev_nick} . ")\n";
-    } elsif ($text =~ /^!pb/) {
+    } elsif ($text eq "!pb") {
 	    my $msg ="";
 	    return if (!defined $joke_points);
 	    foreach my $k (keys $joke_points) {
