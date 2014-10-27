@@ -189,7 +189,7 @@ sub on_public
 	    my @choices = split(' ', $1);
 	    my $rand = rand(scalar @choices);
 	    $mess = "$nick : " . $choices[$rand];
-    } elsif (($prev_nick ne "") && ($prev_nick ne $nick) && ($text =~ /[:xX]([Dd]+)/)) {
+    } elsif (($prev_nick ne "") && ($prev_nick ne $nick) && ($text =~ /^[:xX]([Dd]+)/)) {
 	    my $nb_d = length $1;
 	    $joke_points->{$prev_nick} += $nb_d;
 	    print "+$nb_d points blague pour $prev_nick (" . $joke_points->{$prev_nick} . ")\n";
