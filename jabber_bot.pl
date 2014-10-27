@@ -196,7 +196,7 @@ sub on_public
 	    print "+$nb_d points blague pour $prev_nick (" . $joke_points->{$prev_nick} . ")\n";
     } elsif ($text eq "!pb") {
 	    return if (!defined $joke_points);
-	    foreach my $k (keys $joke_points) {
+	    foreach my $k (sort { $joke_points->{$b} <=> $joke_points->{$a} } keys $joke_points) {
 		    $mess .= "_$k: $joke_points->{$k} points\n";
 	    }
 	    chomp($mess);
