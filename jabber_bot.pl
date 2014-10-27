@@ -184,7 +184,8 @@ sub on_public
 #	    $mess .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
 	    $mess .= "- !help : affiche cette aide.\n";
 	    $mess .= "- !pb : affiche les points-blague\n";
-	    $mess .= "- !battle : sélectionne un choix au hasard.";
+	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
+	    $mess .= "- !calc : Calcule une expression mathématique simple.";
     } elsif ($text =~ /^!battle (.*)/) {
 	    my @choices = split(' ', $1);
 	    my $rand = rand(scalar @choices);
@@ -199,9 +200,9 @@ sub on_public
 		    $mess .= "_$k: $joke_points->{$k} points\n";
 	    }
 	    chomp($mess);
-    } elsif ($text =~ /^([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
+    } elsif ($text =~ /^!calc ([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
 	    $mess = "VTFF";
-    } elsif ($text =~ /([-]?[A-F\d]+\s*([+\-*\/]\s*[+-]?[A-F\d]+\s*)+)/) {
+    } elsif ($text =~ /!calc ([-]?[A-F\d]+\s*([+\-*\/]\s*[+-]?[A-F\d]+\s*)+)/) {
 	my $res = $1;
 	my $scale = ($res =~ /\//)? "scale=3; " : "";
 	$mess = "$res = " . `echo "$scale$res" | bc`;
