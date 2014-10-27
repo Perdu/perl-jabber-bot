@@ -181,7 +181,7 @@ sub on_public
 	    $mess = $text;
     } elsif ($text eq "!help") {
 	    $mess = "Commandes disponibles :\n";
-#	    $mess .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
+	    $mess .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
 	    $mess .= "- !help : affiche cette aide.\n";
 	    $mess .= "- !pb : affiche les points-blague\n";
 	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
@@ -289,11 +289,12 @@ sub on_private
 
     print "Private message from $nick: $text\n";
     if ($text =~ /^!ins (\w+) (.*)/) {
-	priv_message($nick, "Quelqu'un vous fait savoir qu'il pense que vous êtes un(e) vrai(e) $2.");
+	priv_message($1, "Quelqu'un vous fait savoir qu'il pense que vous êtes un(e) vrai(e) $2.");
     }
     if ($nick eq "$room\@$server/$admin") {
 	    if ($text eq "!save") {
 		    store($joke_points, $joke_points_file);
+		    priv_message($admin, "Points blague sauvegardés.");
 		    print "Points blague sauvegardés.\n";
 	    }
     }
@@ -340,7 +341,9 @@ sub message {
 sub priv_message {
 	my $dest = shift;
 	my $body = shift;
-	message_send($dest, $body);
+	my $full_dest = "$room\@$server/$dest";
+	print "Private message to $dest: $body\n";
+	$Con->MessageSend(to=>$full_dest, body=>$body);
 }
 
 sub Stop {
