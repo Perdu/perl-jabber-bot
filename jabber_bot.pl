@@ -206,10 +206,11 @@ sub on_public
 #	    return;
 #    }
 
+    print "prev: $prev_nick, nick: $nick\n";
     if (($text =~ /:([Dd]+)/) && ($prev_nick ne $nick)) {
 	    my $nb_d = length $1;
 	    $joke_points->{$prev_nick} += $nb_d;
-	    print "+$nb_d points blague pour $prev_nick (" . $joke_points->{$prev_nick} . ")";
+	    print "+$nb_d points blague pour $prev_nick (" . $joke_points->{$prev_nick} . ")\n";
 	    return;
     }
 
@@ -337,7 +338,7 @@ sub message {
 
 );
 	$Con->Send($msg);
-	print "<$own_nick> | " . $body;
+	print "<$own_nick> | " . $body . "\n";
 #	$Con->MessageSend(to => $room . $server,
 #			  body => $msg);
 }
