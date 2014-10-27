@@ -180,41 +180,22 @@ sub on_public
     if ($prev_msg eq $text && $prev_nick ne $nick) {
 	    message($text);
 	    $prev_nick = $nick;
-	    return;
-    } else {
-	    $prev_msg = $text;
-	    $prev_nick = $nick;
-    }
-
-    if ($text =~ /!help/) {
+    } elsif ($text =~ /!help/) {
 	    my $mess2 = "Commandes disponibles :\n";
 #	    $mess2 .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
 	    $mess2 .= "- !help : affiche cette aide.\n";
 	    $mess2 .= "- !pb : affiche les points-blague\n";
 	    $mess2 .= "- !battle : sélectionne un choix au hasard.";
 	    message($mess2);
-	    return;
-    }
-
-    if ($text =~ /^!battle (.*)/) {
+    } elsif ($text =~ /^!battle (.*)/) {
 	    my @choices = split(' ', $1);
 	    my $rand = rand(scalar @choices);
 	    message("$nick : " . $choices[$rand]);
-	    return;
-    }
-#    if (int(rand(10)) < 8) {
-#	    return;
-#    }
-
-    print "prev: $prev_nick, nick: $nick\n";
-    if (($text =~ /:([Dd]+)/) && ($prev_nick ne $nick)) {
+    } elsif (($text =~ /:([Dd]+)/) && ($prev_nick ne $nick)) {
 	    my $nb_d = length $1;
 	    $joke_points->{$prev_nick} += $nb_d;
 	    print "+$nb_d points blague pour $prev_nick (" . $joke_points->{$prev_nick} . ")\n";
-	    return;
-    }
-
-    if ($text =~ /^!pb/) {
+    } elsif ($text =~ /^!pb/) {
 	    my $msg ="";
 	    return if (!defined $joke_points);
 	    foreach my $k (keys $joke_points) {
@@ -222,10 +203,7 @@ sub on_public
 	    }
 	    chomp($msg);
 	    message($msg);
-	    return;
-    }
-
-    if ($text =~ /^([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
+    } elsif ($text =~ /^([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
 	    $mess = "Sale ped";
     } elsif ($text =~ /([-]?[A-F\d]+\s*([+\-*\/]\s*[+-]?[A-F\d]+\s*)+)/) {
 	my $res = $1;
@@ -268,6 +246,10 @@ sub on_public
     if ($mess ne "") {
 	message($mess);
     }
+
+    $prev_msg = $text;
+    $prev_nick = $nick;
+
 }
 
 sub on_other_join
