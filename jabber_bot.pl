@@ -156,7 +156,7 @@ sub on_public
     # Ugly workaround to the fact that backlog messages are considered as
     # normal messages: ignores messages during the first 5 seconds (a raspberry
     # pi is slow)
-    if (time() < $join_time + 5) {
+    if (time() < $join_time + 10) {
 	    return;
     }
 
