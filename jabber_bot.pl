@@ -28,6 +28,8 @@ my $joke_points_file = "points_blague";
 
 my $dir_quotes = "quotes";
 my @quotes;
+my $file_philosophie = "zoubida.txt";
+my @philo;
 
 my $index_random;
 my $joke_points;
@@ -60,6 +62,15 @@ foreach my $d (@docs) {
 if (!defined $index_random) {
 	print STDERR "quotes.txt not found\n";
 	exit 1;
+}
+
+open (my $res, $file_philosophie) or die "could not open $file_philosophie";
+my $i = 1;
+while(<$res>){
+	$philo[$i] = $_;
+	chomp($philo[$i]);
+	utf8::decode($philo[$i]);
+	$i++;
 }
 
 if (@ARGV > 0) {
@@ -185,7 +196,8 @@ sub on_public
 	    $mess .= "- !help : affiche cette aide.\n";
 	    $mess .= "- !pb : affiche les points-blague\n";
 	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
-	    $mess .= "- !calc : Calcule une expression mathématique simple.";
+	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
+	    $mess .= "- !philo : Dicte une phrase philosophique profonde.";
     } elsif ($text =~ /^!battle (.*)/) {
 	    my @choices = split(' ', $1);
 	    my $rand = rand(scalar @choices);
@@ -203,6 +215,9 @@ sub on_public
 		    $mess .= "$tmp: $joke_points->{$k} points\n";
 	    }
 	    chomp($mess);
+    } elsif ($text eq "!philo") {
+	    # One random phrase from @philo
+	    $mess = $philo[rand(scalar @philo)];
     } elsif ($text =~ /^!calc ([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
 	    $mess = "VTFF";
     } elsif ($text =~ /!calc ([-]?[A-F\d]+\s*([+\-*\/]\s*[+-]?[A-F\d]+\s*)+)/) {
