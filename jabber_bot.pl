@@ -255,7 +255,6 @@ sub on_public
 #		    $mess = $quotes[$index_random][rand(scalar @{ $quotes[$index_random] })];
 #		    utf8::decode($mess);
 #		    chomp($mess);
-		    #	$mess = "tg fdp de $nick.";
 #	    }
 #    }
     if ($mess ne "") {
@@ -290,9 +289,6 @@ sub on_other_join
     print "  Status: $status ($show)\n";
     print "===\n";
 
-#   if ($from ne $own_nick) {
-#       message("Vas-y casse-toi enculaÿ de $from.");
-#   }
 }
 
 sub on_private
