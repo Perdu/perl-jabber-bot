@@ -215,6 +215,14 @@ sub on_public
 		    $mess .= "$tmp: $joke_points->{$k} points\n";
 	    }
 	    chomp($mess);
+    } elsif ($nick eq $admin && $text =~ /^!pb (.*) ([+-]\d+)/) {
+	    $joke_points->{$1} += $2;
+	    if ($joke_points->{$1} == 0) {
+		    delete $joke_points->{$1};
+		    $mess = "$1 retiré de la liste des points blague.";
+	    } else {
+		    $mess = "$2 points blague pour $1 (" . $joke_points->{$1} . ")";
+	    }
     } elsif ($text eq "!philo") {
 	    # One random phrase from @philo
 	    $mess = $philo[rand(scalar @philo)];
