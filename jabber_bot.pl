@@ -32,6 +32,8 @@ my %quotes;
 my $file_philosophie = "zoubida.txt";
 my @philo;
 
+my $min_number_for_talking = 200;
+
 my $joke_points;
 
 if (-f $joke_points_file) {
@@ -268,7 +270,7 @@ sub on_public
     #    } else {
     else {
 	    $p += 1;
-	    my $rand = int(rand(100));
+	    my $rand = int(rand($min_number_for_talking));
 	    #print "$rand, $p\n";
 	    if ($rand < $p) {
 		    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random)
