@@ -27,11 +27,11 @@ my $ignore_msg = 0;
 my $joke_points_file = "points_blague";
 
 my $dir_quotes = "quotes";
-my @quotes;
+my $quotes_file = "random";
+my %quotes;
 my $file_philosophie = "zoubida.txt";
 my @philo;
 
-my $index_random;
 my $joke_points;
 
 if (-f $joke_points_file) {
@@ -39,28 +39,22 @@ if (-f $joke_points_file) {
 }
 
 opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
-my @docs = grep(/\.txt$/,readdir($DIR));
-my $file_count = 0;
+my @docs = readdir($DIR);
 foreach my $d (@docs) {
-	if ($d eq "quotes.txt") {
-		$index_random = $file_count;
-	}
     my $full_path = "$dir_quotes/$d";
     open (my $res, $full_path) or die "could not open $full_path";
     # First line is special
-    $quotes[$file_count][0] = <$res>;
-    my $i = 1;
+    # $quotes{$d}[0] = <$res>;
+    my $i = 0;
     while(<$res>){
-	    $quotes[$file_count][$i] = $_;
+	    $quotes{$d}[$i] = $_;
 	    $i++;
-	    # todo: array of arrays
-
     }
-    $file_count++;
+    close($res);
 }
 
-if (!defined $index_random) {
-	print STDERR "quotes.txt not found\n";
+if (!defined $quotes{$quotes_file}) {
+	print STDERR "$quotes_file not found\n";
 	exit 1;
 }
 
@@ -194,7 +188,8 @@ sub on_public
 	    $mess .= "- !pb : affiche les points-blague\n";
 	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
 	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
-	    $mess .= "- !philo : Dicte une phrase philosophique profonde.";
+	    $mess .= "- !philo : Dicte une phrase philosophique profonde.\n";
+	    $mess .= "- !quote [add] [<nick>] : Citation aléatoire.";
     } elsif ($text =~ /^!battle (.*)/) {
 	    my @choices = split(' ', $1);
 	    my $rand = rand(scalar @choices);
@@ -223,6 +218,26 @@ sub on_public
     } elsif ($text eq "!philo") {
 	    # One random phrase from @philo
 	    $mess = $philo[rand(scalar @philo)];
+    } elsif ($text eq "!quote") {
+	    # One random phrase from $quotes{$quote_file}
+	    $mess = $quotes{$quotes_file}[rand(scalar @{ $quotes{$quotes_file} })];
+	    utf8::decode($mess);
+	    chomp($mess);
+    } elsif ($text =~ /^!quote add (\w+) (.*)$/) {
+	    my $theme = $1;
+	    my $quote = $2;
+	    chomp($quote);
+	    $quotes{$theme}[scalar @{ $quotes{$theme} }] = $quote;
+	    open (my $quotes_files_fh, '>>', "$dir_quotes/$theme") or die "could not open $dir_quotes/$theme";
+	    print $quotes_files_fh $quote . "\n";
+	    close($quotes_files_fh);
+	    $mess = "Citation ajoutée pour $theme : $quote";
+    } elsif ($text =~ /^!quote (\w+)$/) {
+	    if (defined $quotes{$1}) {
+		    $mess = $quotes{$1}[rand(scalar @{ $quotes{$1} })];
+	    } else {
+		    $mess = "Aucune citation trouvée pour $1";
+	    }
     } elsif ($text =~ /^!calc ([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
 	    $mess = "VTFF";
     } elsif ($text =~ /!calc ([-]?[A-F\d]+\s*([+\-*\/]\s*[+-]?[A-F\d]+\s*)+)/) {
@@ -250,18 +265,19 @@ sub on_public
 #	$mess = "A propos de $1... $nick, tu veux pas sucer la mienne ?";
 #    } elsif ($text =~ /(?:^|\W)je suis (.*)\./i) {
 #	$mess = "Les $1 sont vraiment des connards.";
-#    } else {
+    #    } else {
+    else {
 	    $p += 1;
 	    my $rand = int(rand(100));
 	    #print "$rand, $p\n";
-#	    if ($rand < $p) {
+	    if ($rand < $p) {
 		    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random)
 		    # in other words, number of quotes in quotes.txt
-#		    $mess = $quotes[$index_random][rand(scalar @{ $quotes[$index_random] })];
-#		    utf8::decode($mess);
-#		    chomp($mess);
-#	    }
-#    }
+		    $mess = $quotes{$quotes_file}[rand(scalar @{ $quotes{$quotes_file} })];
+		    utf8::decode($mess);
+		    chomp($mess);
+	    }
+    }
     if ($mess ne "") {
 	message($mess);
     }
