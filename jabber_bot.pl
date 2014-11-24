@@ -192,7 +192,14 @@ sub on_public
 	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
 	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
 	    $mess .= "- !philo : Dicte une phrase philosophique profonde.\n";
-	    $mess .= "- !quote [add] [<nick>] : Citation aléatoire.";
+	    $mess .= "- !quote [add] [<nick>] : Citation aléatoire.\n";
+	    $mess .= "- !speak less|more : diminue/augmente la fréquence des citations aléatoires";
+    } elsif ($text eq "!speak less") {
+	    $min_number_for_talking = int($min_number_for_talking * 1.2);
+	    $mess = "Cap fixé à $min_number_for_talking";
+    } elsif ($text eq "!speak more") {
+	    $min_number_for_talking = int($min_number_for_talking * 0.8);
+	    $mess = "Cap fixé à $min_number_for_talking";
     } elsif ($text =~ /^!battle (.*)/) {
 	    my @choices = split(' ', $1);
 	    my $rand = rand(scalar @choices);
