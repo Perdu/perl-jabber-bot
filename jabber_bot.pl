@@ -35,6 +35,8 @@ my @philo;
 my $min_number_for_talking = 200;
 
 my $joke_points;
+my $joker = $own_nick;
+my $prev_joker = $joker;
 
 if (-f $joke_points_file) {
 	$joke_points = retrieve($joke_points_file);
@@ -182,6 +184,17 @@ sub on_public
 	return;
     }
 
+    print "joker : $joker, nick : $nick, prev_nick: $prev_nick\n";
+    if (($joker ne "") && ($joker ne $nick) && ($text =~ /^[:xX]([Dd]+)/)) {
+	    my $nb_d = length $1;
+	    $joke_points->{$joker} += $nb_d;
+	    print "+$nb_d points blague pour $joker (" . $joke_points->{$joker} . ")\n";
+	    # $joker stays the same
+	    return;
+    } else {
+	    $joker = $nick;
+    }
+
     if ($prev_msg eq $text && $prev_nick ne $nick) {
 	    $mess = $text;
     } elsif ($text eq "!help") {
@@ -204,10 +217,6 @@ sub on_public
 	    my @choices = split(' ', $1);
 	    my $rand = rand(scalar @choices);
 	    $mess = "$nick : " . $choices[$rand];
-    } elsif (($prev_nick ne "") && ($prev_nick ne $nick) && ($text =~ /^[:xX]([Dd]+)/)) {
-	    my $nb_d = length $1;
-	    $joke_points->{$prev_nick} += $nb_d;
-	    print "+$nb_d points blague pour $prev_nick (" . $joke_points->{$prev_nick} . ")\n";
     } elsif ($text eq "!pb") {
 	    return if (!defined $joke_points);
 	    foreach my $k (sort { $joke_points->{$b} <=> $joke_points->{$a} } keys $joke_points) {
@@ -290,7 +299,8 @@ sub on_public
 	    }
     }
     if ($mess ne "") {
-	message($mess);
+	    message($mess);
+	    $joker = $own_nick;
     }
 
     $prev_msg = $text;
