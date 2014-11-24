@@ -77,9 +77,6 @@ if (@ARGV > 0) {
 	$room = shift;
 }
 
-# Informations concernant le Bot :
-# my $version = '1.0';
-
 # Probability of talking.
 # Defaults to 0, gains 0.1 every message. Can be decreased when the bot is told
 # to shut up.
