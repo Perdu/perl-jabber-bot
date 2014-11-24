@@ -50,6 +50,7 @@ foreach my $d (@docs) {
     my $i = 0;
     while(<$res>){
 	    $quotes{$d}[$i] = $_;
+	    utf8::decode($quotes{$d}[$i]);
 	    $i++;
     }
     close($res);
@@ -237,6 +238,7 @@ sub on_public
     } elsif ($text =~ /^!quote (\w+)$/) {
 	    if (defined $quotes{$1}) {
 		    $mess = $quotes{$1}[rand(scalar @{ $quotes{$1} })];
+		    chomp($mess);
 	    } else {
 		    $mess = "Aucune citation trouvée pour $1";
 	    }
