@@ -27,10 +27,13 @@ my $ignore_msg = 0;
 my $joke_points_file = "points_blague";
 
 my $dir_quotes = "quotes";
-my $quotes_file = "random";
 my %quotes;
+my @quotes_all;
+# $authors[$i] saif $quotes_all[$i]
+my @authors;
 my $file_philosophie = "zoubida.txt";
 my @philo;
+my $last_author = "Le silence est d'or.";
 
 my $min_number_for_talking = 200;
 
@@ -44,6 +47,7 @@ if (-f $joke_points_file) {
 
 opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
 my @docs = readdir($DIR);
+my $j = 0;
 foreach my $d (@docs) {
     my $full_path = "$dir_quotes/$d";
     open (my $res, $full_path) or die "could not open $full_path";
@@ -51,16 +55,14 @@ foreach my $d (@docs) {
     # $quotes{$d}[0] = <$res>;
     my $i = 0;
     while(<$res>){
+	    utf8::decode($_);
 	    $quotes{$d}[$i] = $_;
-	    utf8::decode($quotes{$d}[$i]);
+	    $quotes_all[$j] = $_;
+	    $authors[$j] = "$d";
 	    $i++;
+	    $j++;
     }
     close($res);
-}
-
-if (!defined $quotes{$quotes_file}) {
-	print STDERR "$quotes_file not found\n";
-	exit 1;
 }
 
 open (my $res, $file_philosophie) or die "could not open $file_philosophie";
@@ -206,7 +208,10 @@ sub on_public
 	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
 	    $mess .= "- !philo : Dicte une phrase philosophique profonde.\n";
 	    $mess .= "- !quote [add] [<nick>] : Citation aléatoire.\n";
+	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more : diminue/augmente la fréquence des citations aléatoires";
+    } elsif ($text eq "!who") {
+	    $mess = "$last_author";
     } elsif ($text eq "!speak less") {
 	    $min_number_for_talking = int($min_number_for_talking * 1.2);
 	    $mess = "Cap fixé à $min_number_for_talking";
@@ -239,7 +244,9 @@ sub on_public
 	    $mess = $philo[rand(scalar @philo)];
     } elsif ($text eq "!quote") {
 	    # One random phrase from $quotes{$quote_file}
-	    $mess = $quotes{$quotes_file}[rand(scalar @{ $quotes{$quotes_file} })];
+	    my $quote_nb = rand(scalar @quotes_all);
+	    $last_author = $authors[$quote_nb];
+	    $mess = $quotes_all[$quote_nb];
 	    utf8::decode($mess);
 	    chomp($mess);
     } elsif ($text =~ /^!quote add (\w+) (.*)$/) {
@@ -254,6 +261,7 @@ sub on_public
     } elsif ($text =~ /^!quote (\w+)$/) {
 	    if (defined $quotes{$1}) {
 		    $mess = $quotes{$1}[rand(scalar @{ $quotes{$1} })];
+		    $last_author = $1;
 		    chomp($mess);
 	    } else {
 		    $mess = "Aucune citation trouvée pour $1";
@@ -291,9 +299,11 @@ sub on_public
 	    my $rand = int(rand($min_number_for_talking));
 	    #print "$rand, $p\n";
 	    if ($rand < $p) {
-		    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random)
+		    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random))
 		    # in other words, number of quotes in quotes.txt
-		    $mess = $quotes{$quotes_file}[rand(scalar @{ $quotes{$quotes_file} })];
+		    my $quote_nb = rand(scalar @quotes_all);
+		    $mess = $quotes_all[$quote_nb];
+		    $last_author = $authors[$quote_nb];
 		    utf8::decode($mess);
 		    chomp($mess);
 	    }
