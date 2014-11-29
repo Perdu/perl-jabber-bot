@@ -207,10 +207,19 @@ sub on_public
 	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
 	    $mess .= "- !philo : Dicte une phrase philosophique profonde.\n";
 	    $mess .= "- !quote [add] [<nick>] : Citation aléatoire.\n";
+	    $mess .= "- !quote list : Liste tous les auteurs\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more : diminue/augmente la fréquence des citations aléatoires";
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
+    } elsif ($text eq "!quote list") {
+	    opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
+	    my @docs = grep{ !/^\..*/ } readdir($DIR);
+	    foreach my $d (@docs) {
+		    # Add underscore in the middle of the nick
+		    $d =~ s/(.)(.*)/$1_$2/;
+		    $mess .= "$d ";
+	    }
     } elsif ($text eq "!speak less") {
 	    $min_number_for_talking = int($min_number_for_talking * 1.2);
 	    $mess = "Cap fixé à $min_number_for_talking";
