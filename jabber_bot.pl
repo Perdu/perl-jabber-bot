@@ -262,9 +262,13 @@ sub on_public
 	    $mess = "Citation ajoutée pour $theme : $quote";
     } elsif ($text =~ /^!quote (\w+)$/) {
 	    if (defined $quotes{$1}) {
-		    $mess = $quotes{$1}[rand(scalar @{ $quotes{$1} })];
+		    my $nb_quotes_for_author = scalar @{ $quotes{$1} };
+		    my $quote_nb = int(rand($nb_quotes_for_author));
 		    $last_author = $1;
+		    $mess = $quotes{$1}[$quote_nb];
 		    chomp($mess);
+		    $quote_nb++; # We want actual quote number, not index
+		    $mess .= " ($quote_nb/$nb_quotes_for_author)";
 	    } else {
 		    $mess = "Aucune citation trouvée pour $1";
 	    }
