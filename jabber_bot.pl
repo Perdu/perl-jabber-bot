@@ -186,7 +186,6 @@ sub on_public
 	return;
     }
 
-    print "joker : $joker, nick : $nick, prev_nick: $prev_nick\n";
     if (($joker ne "") && ($joker ne $nick) && ($text =~ /^[:xX]([Dd]+)/)) {
 	    my $nb_d = length $1;
 	    $joke_points->{$joker} += $nb_d;
