@@ -288,7 +288,19 @@ sub on_public
 	my $scale = ($res =~ /\//)? "scale=3; " : "";
 	$mess = "$res = " . `echo "$scale$res" | bc`;
 	chomp($mess);
-    } #elsif ($text =~ /(?:^|\W)(connard|pd|pédé|fdp|gay|retardé|mac-user|con|
+    } elsif ($text =~ /^(.*?)[,:]? [:xX]([Dd]+)$/) {
+	    my $nb_d = length $2;
+	    # Only add joke points if the joker already has quote points...
+	    # It's easier than tracking who's in the room to know if we laughing
+	    # about someone's joke.
+	    my $tmp = $joke_points->{$1};
+	    if ($1 ne $nick && defined $tmp) {
+		    $joker = $1;
+		    $joke_points->{$joker} += $nb_d;
+		    print "+$nb_d points blague pour $joker (" . $joke_points->{$joker} . ")\n";
+	    }
+    }
+    #elsif ($text =~ /(?:^|\W)(connard|pd|pédé|fdp|gay|retardé|mac-user|con|
 #                        débile|polard|noob)(?:\W|$)/ix) {
 #	$mess = "C'est toi le $1 $nick.";
 #    } elsif ($text =~ /(?:^|\W)(enculé|enculay|enculasse|enfoiré|enflure|
