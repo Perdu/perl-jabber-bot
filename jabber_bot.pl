@@ -209,7 +209,7 @@ sub on_public
 	    $mess .= "- !quote [add] [<nick>] : Citation aléatoire.\n";
 	    $mess .= "- !quote list : Liste tous les auteurs\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
-	    $mess .= "- !speak less|more : diminue/augmente la fréquence des citations aléatoires";
+	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires";
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
     } elsif ($text eq "!quote list") {
@@ -225,6 +225,9 @@ sub on_public
 	    $mess = "Cap fixé à $min_number_for_talking";
     } elsif ($text eq "!speak more") {
 	    $min_number_for_talking = int($min_number_for_talking * 0.8);
+	    $mess = "Cap fixé à $min_number_for_talking";
+    } elsif ($text =~ /^!speak (\d+)$/) {
+	    $min_number_for_talking = $1;
 	    $mess = "Cap fixé à $min_number_for_talking";
     } elsif ($text =~ /^!battle (.*)/) {
 	    my @choices = split(' ', $1);
