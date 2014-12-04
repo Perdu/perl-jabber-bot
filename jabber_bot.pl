@@ -35,7 +35,7 @@ my $file_philosophie = "zoubida.txt";
 my @philo;
 my $last_author = "Le silence est d'or.";
 
-my $min_number_for_talking = 200;
+my $min_number_for_talking = 2000;
 
 my $joke_points;
 my $joker = $own_nick;
