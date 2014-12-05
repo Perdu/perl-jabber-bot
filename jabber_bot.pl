@@ -8,6 +8,8 @@ use utf8;
 use Net::Jabber qw(Client);
 use File::Slurp;
 use Storable;
+use WWW::Mechanize;
+use MIME::Base64;
 
 # Dépendances :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
@@ -40,6 +42,11 @@ my $min_number_for_talking = 2000;
 my $joke_points;
 my $joker = $own_nick;
 my $prev_joker = $joker;
+
+my $prev_link = "";
+my $MIN_LINK_SIZE = 100;
+my $SHORTENER_URL = "http://raspi/s/";
+my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
 
 if (-f $joke_points_file) {
 	$joke_points = retrieve($joke_points_file);
@@ -209,7 +216,8 @@ sub on_public
 	    $mess .= "- !quote [add] [<nick>] : Citation aléatoire.\n";
 	    $mess .= "- !quote list : Liste tous les auteurs\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
-	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires";
+	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
+	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon";
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
     } elsif ($text eq "!quote list") {
@@ -220,6 +228,11 @@ sub on_public
 		    $d =~ s/(.)(.*)/$1_$2/;
 		    $mess .= "$d ";
 	    }
+    } elsif ($text eq "!link" && $prev_link ne "") {
+	    $mess = shortener($prev_link);
+    } elsif ($text =~ /^!link (http(s)?:\/\/[^ ]+)/) {
+	    $prev_link = $1;
+	    $mess = shortener($1);
     } elsif ($text eq "!speak less") {
 	    $min_number_for_talking = int($min_number_for_talking * 1.2);
 	    $mess = "Cap fixé à $min_number_for_talking";
@@ -301,6 +314,11 @@ sub on_public
 		    $joker = $1;
 		    $joke_points->{$joker} += $nb_d;
 		    print "+$nb_d points blague pour $joker (" . $joke_points->{$joker} . ")\n";
+	    }
+    } elsif ($text =~ /(http(s)?:\/\/[^ ]+)/) {
+	    $prev_link = $1;
+	    if (length($1) >= $MIN_LINK_SIZE) {
+		    $mess = shortener($1);
 	    }
     }
     #elsif ($text =~ /(?:^|\W)(connard|pd|pédé|fdp|gay|retardé|mac-user|con|
@@ -444,4 +462,17 @@ sub Stop {
     $Con->Disconnect();
     store($joke_points, $joke_points_file);
     exit(0);
+}
+
+sub shortener {
+	my $url = $SHORTENER_URL . "?url=" . encode_base64(shift);
+	my $mech = WWW::Mechanize->new;
+	my $res = "";
+	my $ans = $mech->get($url);
+	if (!$ans->is_success || $mech->content() eq "hi") {
+                print "Failed fetching url $url\n";
+		return "";
+        }
+	$res = $mech->content();
+	return $SHORTENER_EXTERNAL_URL . $res;
 }
