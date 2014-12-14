@@ -45,7 +45,7 @@ my $prev_joker = $joker;
 
 my $prev_link = "";
 my $MIN_LINK_SIZE = 0; # 0 = always shorten
-my $MAX_TITLE_SIZE = 100;
+my $MAX_TITLE_SIZE = 200;
 my $SHORTENER_URL = "http://raspi/s/";
 my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
 
