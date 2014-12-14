@@ -44,7 +44,8 @@ my $joker = $own_nick;
 my $prev_joker = $joker;
 
 my $prev_link = "";
-my $MIN_LINK_SIZE = 100;
+my $MIN_LINK_SIZE = 0; # 0 = always shorten
+my $MAX_TITLE_SIZE = 100;
 my $SHORTENER_URL = "http://raspi/s/";
 my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
 
@@ -475,14 +476,31 @@ sub Stop {
 }
 
 sub shortener {
-	my $url = $SHORTENER_URL . "?url=" . encode_base64(shift);
-	my $mech = WWW::Mechanize->new;
+	my $url = shift;
+	my $full_url = $SHORTENER_URL . "?url=" . encode_base64($url);
+	my $mech = WWW::Mechanize->new(autocheck => 0);
 	my $res = "";
-	my $ans = $mech->get($url);
+	my $ans = $mech->get($full_url);
 	if (!$ans->is_success || $mech->content() eq "hi") {
-                print "Failed fetching url $url\n";
+                print "Failed fetching url $full_url\n";
 		return "";
         }
 	$res = $mech->content();
+
+	# Also fetch title
+	$ans = $mech->get($url);
+	if (!$ans->is_success) {
+                print "Failed fetching url $url\n";
+		return "Not found.";
+	} else {
+		my $title = $mech->title();
+		if (defined $title) {
+			if (length $title gt $MAX_TITLE_SIZE) {
+				$title = substr($title, 0, $MAX_TITLE_SIZE);
+				chomp($title);
+			}
+			$res .= " " . $title;
+		}
+	}
 	return $SHORTENER_EXTERNAL_URL . $res;
 }
