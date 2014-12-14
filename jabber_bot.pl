@@ -397,6 +397,7 @@ sub on_private
     my $message = shift;
     my $text = $message->GetBody();
     my $nick = $message->GetFrom();
+    my $mess = "";
 
     print "Private message from $nick: $text\n";
     if ($text =~ /^!ins (\w+) (.*)/) {
@@ -405,11 +406,20 @@ sub on_private
     if ($nick eq "$room\@$server/$admin") {
 	    if ($text eq "!save") {
 		    store($joke_points, $joke_points_file);
-		    priv_message($admin, "Points blague sauvegardés.");
-		    print "Points blague sauvegardés.\n";
+		    $mess = "Points blague sauvegardés.";
+	    } elsif ($text =~ /^!pb (.*) ([+-]\d+)/) {
+		    $joke_points->{$1} += $2;
+		    if ($joke_points->{$1} == 0) {
+			    delete $joke_points->{$1};
+			    $mess = "$1 retiré de la liste des points blague.";
+		    } else {
+			    $mess = "$2 points blague pour $1 (" . $joke_points->{$1} . ")";
+		    }
+	    }
+	    if ($mess ne "") {
+		    priv_message($admin, $mess);
 	    }
     }
-
 }
 
 sub on_other_part
