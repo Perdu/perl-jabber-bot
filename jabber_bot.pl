@@ -488,13 +488,12 @@ sub shortener {
                 print "Failed fetching url $full_url\n";
 		return "";
         }
-	$res = $mech->content();
 
 	# Also fetch title
 	$ans = $mech->get($url);
 	if (!$ans->is_success) {
                 print "Failed fetching url $url : " . $mech->status . "\n";
-		return "Not found.";
+		$res .= "Not found.";
 	} else {
 		my $title = $mech->title();
 		if (defined $title) {
