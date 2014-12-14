@@ -95,7 +95,10 @@ my $Con = new Net::Jabber::Client();
 my $prev_msg = "";
 my $prev_nick = "";
 
-$SIG{HUP} = \&Stop;$SIG{KILL} = \&Stop;$SIG{TERM} = \&Stop;$SIG{INT} = \&Stop;
+$SIG{HUP} = \&Stop;
+$SIG{KILL} = \&Stop;
+$SIG{TERM} = \&Stop;
+$SIG{INT} = \&Stop;
 
 # Connect and auth
 $Con->Connect(hostname => $con_server);
@@ -135,7 +138,7 @@ $Con->SetMessageCallBacks("groupchat"=>\&on_public, "chat"=>\&on_private);
 
 while(defined($Con->Process())) {}
 
-
+Stop();
 
 #sub tryregister {
 #	print "Failed to authenticate, trying to register...\n";
