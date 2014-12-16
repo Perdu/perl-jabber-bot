@@ -482,7 +482,6 @@ sub shortener {
 	my $mech = WWW::Mechanize->new(autocheck => 0);
 	my $res = "";
 	my $ans = "";
-	print $full_url;
 	if (length($url) >= $MIN_LINK_SIZE) {
 		$ans = $mech->get($full_url);
 		if (!$ans->is_success || $mech->content() eq "hi") {
