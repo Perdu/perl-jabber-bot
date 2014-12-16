@@ -44,7 +44,7 @@ my $joker = $own_nick;
 my $prev_joker = $joker;
 
 my $prev_link = "";
-my $MIN_LINK_SIZE = 0; # 0 = always shorten
+my $MIN_LINK_SIZE = 100; # 0 = always shorten
 my $MAX_TITLE_SIZE = 200;
 my $SHORTENER_URL = "http://raspi/s/";
 my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
@@ -321,9 +321,7 @@ sub on_public
 	    }
     } elsif ($text =~ /(http(s)?:\/\/[^ ]+)/) {
 	    $prev_link = $1;
-	    if (length($1) >= $MIN_LINK_SIZE) {
-		    $mess = shortener($1);
-	    }
+	    $mess = shortener($1);
     }
     #elsif ($text =~ /(?:^|\W)(connard|pd|pédé|fdp|gay|retardé|mac-user|con|
 #                        débile|polard|noob)(?:\W|$)/ix) {
@@ -483,18 +481,27 @@ sub shortener {
 	my $full_url = $SHORTENER_URL . "?url=" . encode_base64($url);
 	my $mech = WWW::Mechanize->new(autocheck => 0);
 	my $res = "";
-	my $ans = $mech->get($full_url);
-	if (!$ans->is_success || $mech->content() eq "hi") {
-                print "Failed fetching url $full_url\n";
-		return "";
-        }
-	$res = $mech->content();
+	my $ans = "";
+	print $full_url;
+	if (length($url) >= $MIN_LINK_SIZE) {
+		$ans = $mech->get($full_url);
+		if (!$ans->is_success || $mech->content() eq "hi") {
+			print "Failed fetching url $full_url\n";
+			return "";
+		}
+		$res = $SHORTENER_EXTERNAL_URL . $mech->content();
+	}
 
 	# Also fetch title
 	$ans = $mech->get($url);
 	if (!$ans->is_success) {
                 print "Failed fetching url $url : " . $mech->status . "\n";
-		$res .= " Not found.";
+		if ($mech->status eq "404") {
+			if ($res ne "") {
+				$res .= " ";
+			}
+			$res .= "404";
+		}
 	} else {
 		my $title = $mech->title();
 		if (defined $title) {
@@ -502,8 +509,11 @@ sub shortener {
 				$title = substr($title, 0, $MAX_TITLE_SIZE);
 				chomp($title);
 			}
-			$res .= " " . $title;
+			if ($res ne "") {
+				$res .= " ";
+			}
+			$res .= $title;
 		}
 	}
-	return $SHORTENER_EXTERNAL_URL . $res;
+	return $res;
 }
