@@ -14,6 +14,7 @@ use MIME::Base64;
 # Dépendances :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
 # libfile-slurp-perl (Debian) / perl-file-slurp (archlinux)
+# perl-crypt-ssleay (archlinux) (pour les liens https)
 
 # Configuration des options de connexion (serveur, login) :
 my $server = 'chat.jabberfr.org';
