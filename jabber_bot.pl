@@ -251,6 +251,14 @@ sub on_public
 	    my @choices = split(' ', $1);
 	    my $rand = rand(scalar @choices);
 	    $mess = "$nick : " . $choices[$rand];
+	    # Sometimes change answer
+	    $rand = int(rand(20));
+	    print $rand . "\n";
+	    if ($rand == 0) {
+		    $mess = "$nick : demain";
+	    } elsif ($rand == 1 && scalar @choices == 2) {
+		    $mess = "$nick : les deux";
+	    }
     } elsif ($text eq "!pb") {
 	    return if (!defined $joke_points);
 	    foreach my $k (sort { $joke_points->{$b} <=> $joke_points->{$a} } keys $joke_points) {
