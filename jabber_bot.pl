@@ -229,9 +229,15 @@ sub on_public
 	    opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
 	    my @docs = grep{ !/^\..*/ } readdir($DIR);
 	    foreach my $d (@docs) {
+		    my $nb_lines = 0;
+		    open(my $f, '<', "$dir_quotes/$d");
+		    while (<$f>) {
+			    $nb_lines++;
+		    }
+		    close($f);
 		    # Add underscore in the middle of the nick
 		    $d =~ s/(.)(.*)/$1_$2/;
-		    $mess .= "$d ";
+		    $mess .= "$d ($nb_lines) ";
 	    }
     } elsif ($text eq "!link" && $prev_link ne "") {
 	    $mess = shortener($prev_link);
