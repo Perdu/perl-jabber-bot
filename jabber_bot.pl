@@ -215,6 +215,7 @@ sub on_public
 	    $mess .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
 	    $mess .= "- !help : affiche cette aide.\n";
 	    $mess .= "- !pb : affiche les points-blague\n";
+	    $mess .= "- !alias <nick1> <nick2> : donne les points blague de nick2 à nick1\n";
 	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
 	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
 	    $mess .= "- !philo : Dicte une phrase philosophique profonde.\n";
@@ -282,6 +283,10 @@ sub on_public
 	    } else {
 		    $mess = "$2 points blague pour $1 (" . $joke_points->{$1} . ")";
 	    }
+    } elsif ($nick eq $admin && $text =~ /!alias (.*) (.*)/) {
+	    $joke_points->{$1} += $joke_points->{$2};
+	    delete $joke_points->{$2};
+	    $mess = "$1 hérite des points blague de $2.";
     } elsif ($text eq "!philo") {
 	    # One random phrase from @philo
 	    $mess = $philo[rand(scalar @philo)];
@@ -427,6 +432,10 @@ sub on_private
 		    } else {
 			    $mess = "$2 points blague pour $1 (" . $joke_points->{$1} . ")";
 		    }
+	    } elsif ($text =~ /!alias (.*) (.*)/) {
+		    $joke_points->{$1} += $joke_points->{$2};
+		    delete $joke_points->{$2};
+		    $mess = "$1 hérite des points blague de $2.";
 	    }
 	    if ($mess ne "") {
 		    priv_message($admin, $mess);
