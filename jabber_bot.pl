@@ -289,9 +289,7 @@ sub on_public
 	    # One random phrase from $quotes{$quote_file}
 	    my $quote_nb = rand(scalar @quotes_all);
 	    $last_author = $authors[$quote_nb];
-	    $mess = $quotes_all[$quote_nb];
-	    utf8::decode($mess);
-	    chomp($mess);
+	    $mess = convert_quote($quotes_all[$quote_nb], $nick);
     } elsif ($text =~ /^!quote add (\w+) (.*)$/) {
 	    my $theme = $1;
 	    my $quote = $2;
@@ -309,8 +307,7 @@ sub on_public
 		    my $nb_quotes_for_author = scalar @{ $quotes{$1} };
 		    my $quote_nb = int(rand($nb_quotes_for_author));
 		    $last_author = $1;
-		    $mess = $quotes{$1}[$quote_nb];
-		    chomp($mess);
+		    $mess = convert_quote($quotes{$1}[$quote_nb], $nick);
 		    $quote_nb++; # We want actual quote number, not index
 		    $mess .= " ($quote_nb/$nb_quotes_for_author)";
 	    } else {
@@ -367,10 +364,8 @@ sub on_public
 		    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random))
 		    # in other words, number of quotes in quotes.txt
 		    my $quote_nb = rand(scalar @quotes_all);
-		    $mess = $quotes_all[$quote_nb];
+		    $mess = convert_quote($quotes_all[$quote_nb], $nick);
 		    $last_author = $authors[$quote_nb];
-		    utf8::decode($mess);
-		    chomp($mess);
 	    }
     }
     if ($mess ne "") {
@@ -530,4 +525,13 @@ sub shortener {
 		}
 	}
 	return $res;
+}
+
+sub convert_quote {
+	my $quote = shift;
+	my $nick = shift;
+	$quote =~ s/%%/$nick/g;
+	utf8::decode($quote);
+	chomp($quote);
+	return $quote;
 }
