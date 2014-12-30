@@ -49,6 +49,8 @@ my $MIN_LINK_SIZE = 100; # 0 = always shorten
 my $MAX_TITLE_SIZE = 200;
 my $SHORTENER_URL = "http://raspi/s/";
 my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
+my $MECHANIZE_TIMEOUT = 10; # Max time to wait while does not respond
+my $MECHANIZE_MAX_SIZE = 1000000; # 1 MB
 
 if (-f $joke_points_file) {
 	$joke_points = retrieve($joke_points_file);
@@ -498,7 +500,7 @@ sub Stop {
 sub shortener {
 	my $url = shift;
 	my $full_url = $SHORTENER_URL . "?url=" . encode_base64($url);
-	my $mech = WWW::Mechanize->new(autocheck => 0);
+	my $mech = WWW::Mechanize->new(autocheck => 0, max_size => $MECHANIZE_MAX_SIZE, timeout=> $MECHANIZE_TIMEOUT);
 	my $res = "";
 	my $ans = "";
 	if (length($url) >= $MIN_LINK_SIZE) {
