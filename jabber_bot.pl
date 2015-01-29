@@ -221,7 +221,7 @@ sub on_public
 	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
 	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
 	    $mess .= "- !philo : Dicte une phrase philosophique profonde.\n";
-	    $mess .= "- !quote [add] [<nick>] : Citation aléatoire.\n";
+	    $mess .= "- !quote [add] [<nick>] [recherche]: Citation aléatoire.\n";
 	    $mess .= "- !quote list : Liste tous les auteurs\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
@@ -309,14 +309,29 @@ sub on_public
 	    print $quotes_files_fh $quote . "\n";
 	    close($quotes_files_fh);
 	    $mess = "Citation ajoutée pour $theme : $quote";
-    } elsif ($text =~ /^!quote (\w+)\s*$/) {
+    } elsif ($text =~ /^!quote (\w+)\s*(.*)$/) {
 	    if (defined $quotes{$1}) {
-		    my $nb_quotes_for_author = scalar @{ $quotes{$1} };
-		    my $quote_nb = int(rand($nb_quotes_for_author));
-		    $last_author = $1;
-		    $mess = convert_quote($quotes{$1}[$quote_nb], $nick);
-		    $quote_nb++; # We want actual quote number, not index
-		    $mess .= " ($quote_nb/$nb_quotes_for_author)";
+		    if ($2 eq '') {
+			    # Give one random quote
+			    my $nb_quotes_for_author = scalar @{ $quotes{$1} };
+			    my $quote_nb = int(rand($nb_quotes_for_author));
+			    $last_author = $1;
+			    $mess = convert_quote($quotes{$1}[$quote_nb], $nick);
+			    $quote_nb++; # We want actual quote number, not index
+			    $mess .= " ($quote_nb/$nb_quotes_for_author)";
+		    } else {
+			    my $search = $2;
+			    # Search for the keyword in all the quotes
+			    foreach my $q (@{ $quotes{$1} }) {
+				    if ($q =~ /$search/) {
+					    $mess .= $q;
+				    }
+			    }
+			    chomp($mess);
+			    if ($mess eq "") {
+				    $mess = "Aucune citation trouvée.";
+			    }
+		    }
 	    } else {
 		    $mess = "Aucune citation trouvée pour $1";
 	    }
