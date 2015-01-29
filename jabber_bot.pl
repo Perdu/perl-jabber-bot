@@ -51,6 +51,8 @@ my $SHORTENER_URL = "http://raspi/s/";
 my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
 my $MECHANIZE_TIMEOUT = 10; # Max time to wait while does not respond
 my $MECHANIZE_MAX_SIZE = 1000000; # 1 MB
+my $QUOTES_URL = 'raspi:www/public/files/quotes/';
+my $QUOTES_EXTERNAL_URL = 'https://ploudseeker.com/files/quotes/';
 
 if (-f $joke_points_file) {
 	$joke_points = retrieve($joke_points_file);
@@ -223,6 +225,7 @@ sub on_public
 	    $mess .= "- !philo : Dicte une phrase philosophique profonde.\n";
 	    $mess .= "- !quote [add] [<nick>] [recherche]: Citation aléatoire.\n";
 	    $mess .= "- !quote list : Liste tous les auteurs\n";
+	    $mess .= "- !quotes <nick> : Donne toutes les citations d'un auteur\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
 	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon";
@@ -332,6 +335,13 @@ sub on_public
 				    $mess = "Aucune citation trouvée.";
 			    }
 		    }
+	    } else {
+		    $mess = "Aucune citation trouvée pour $1";
+	    }
+    } elsif ($text =~ /^!quotes (\w+)\s*$/) {
+	    if (defined $quotes{$1}) {
+		    system("scp", "quotes/$1", $QUOTES_URL);
+		    $mess .= $QUOTES_EXTERNAL_URL . $1;
 	    } else {
 		    $mess = "Aucune citation trouvée pour $1";
 	    }
