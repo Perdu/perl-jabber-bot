@@ -309,7 +309,7 @@ sub on_public
 	    print $quotes_files_fh $quote . "\n";
 	    close($quotes_files_fh);
 	    $mess = "Citation ajoutée pour $theme : $quote";
-    } elsif ($text =~ /^!quote (\w+)$/) {
+    } elsif ($text =~ /^!quote (\w+)\s*$/) {
 	    if (defined $quotes{$1}) {
 		    my $nb_quotes_for_author = scalar @{ $quotes{$1} };
 		    my $quote_nb = int(rand($nb_quotes_for_author));
