@@ -10,6 +10,9 @@ use File::Slurp;
 use Storable;
 use WWW::Mechanize;
 use MIME::Base64;
+use POSIX qw(mkfifo);
+use threads;
+use threads::shared;
 
 # Dépendances :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
@@ -53,6 +56,8 @@ my $MECHANIZE_TIMEOUT = 10; # Max time to wait while does not respond
 my $MECHANIZE_MAX_SIZE = 1000000; # 1 MB
 my $QUOTES_URL = 'raspi:www/public/files/quotes/';
 my $QUOTES_EXTERNAL_URL = 'https://ploudseeker.com/files/quotes/';
+
+my $FIFOPATH = "fifo";
 
 if (-f $joke_points_file) {
 	$joke_points = retrieve($joke_points_file);
@@ -140,6 +145,8 @@ my $join_time = time();
 # Install hook functions:
 $Con->SetCallBacks("presence" => \&on_other_join);
 $Con->SetMessageCallBacks("groupchat"=>\&on_public, "chat"=>\&on_private);
+
+my $thr = threads->create('monitor_fifo', '');
 
 while(defined($Con->Process())) {}
 
@@ -519,6 +526,7 @@ sub Stop {
     print "Exiting...\n";
     $Con->Disconnect();
     store($joke_points, $joke_points_file);
+    unlink($FIFOPATH);
     exit(0);
 }
 
@@ -570,4 +578,21 @@ sub convert_quote {
 	utf8::decode($quote);
 	chomp($quote);
 	return $quote;
+}
+
+sub monitor_fifo {
+	if (! -p $FIFOPATH) {
+		mkfifo($FIFOPATH, 0700) || die "mkfifo failed: $!";
+	}
+
+	# if we don't open the fifo in read-write mode, we can't read it with an
+	# infinite loop.
+	open(my $fifo, "+<", $FIFOPATH) or die "Could not open fifo";
+
+	while(<$fifo>) {
+		my $mess = $_;
+		chomp($mess);
+		print "Received from fifo: $mess\n";
+		message($mess);
+	}
 }
