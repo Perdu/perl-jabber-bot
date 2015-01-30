@@ -592,6 +592,7 @@ sub monitor_fifo {
 	while(<$fifo>) {
 		my $mess = $_;
 		chomp($mess);
+		utf8::decode($mess);
 		print "Received from fifo: $mess\n";
 		message($mess);
 	}
