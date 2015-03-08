@@ -57,7 +57,7 @@ my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
 my $MECHANIZE_TIMEOUT = 10; # Max time to wait while does not respond
 my $MECHANIZE_MAX_SIZE = 1000000; # 1 MB
 my $QUOTES_SERVER_PORT = 11421;
-my $QUOTES_EXTERNAL_URL = "https://ploudseeker.com:$QUOTES_SERVER_PORT/";
+my $QUOTES_EXTERNAL_URL = "http://ploudseeker.com:$QUOTES_SERVER_PORT/";
 
 my $FIFOPATH = "fifo";
 
