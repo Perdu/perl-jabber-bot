@@ -13,6 +13,8 @@ use MIME::Base64;
 use POSIX qw(mkfifo);
 use threads;
 use threads::shared;
+use HTTP::Daemon;
+use File::Basename;
 
 # Dépendances :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
@@ -54,8 +56,8 @@ my $SHORTENER_URL = "http://raspi/s/";
 my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
 my $MECHANIZE_TIMEOUT = 10; # Max time to wait while does not respond
 my $MECHANIZE_MAX_SIZE = 1000000; # 1 MB
-my $QUOTES_URL = 'raspi:www/public/files/quotes/';
-my $QUOTES_EXTERNAL_URL = 'https://ploudseeker.com/files/quotes/';
+my $QUOTES_SERVER_PORT = 11421;
+my $QUOTES_EXTERNAL_URL = "https://ploudseeker.com:$QUOTES_SERVER_PORT/";
 
 my $FIFOPATH = "fifo";
 
@@ -147,6 +149,7 @@ $Con->SetCallBacks("presence" => \&on_other_join);
 $Con->SetMessageCallBacks("groupchat"=>\&on_public, "chat"=>\&on_private);
 
 my $thr = threads->create('monitor_fifo', '');
+my $thr2 = threads->create('http_server', '');
 
 while(defined($Con->Process())) {}
 
@@ -347,7 +350,6 @@ sub on_public
 	    }
     } elsif ($text =~ /^!quotes (\w+)\s*$/) {
 	    if (defined $quotes{$1}) {
-		    system("scp", "quotes/$1", $QUOTES_URL);
 		    $mess .= $QUOTES_EXTERNAL_URL . $1;
 	    } else {
 		    $mess = "Aucune citation trouvée pour $1";
@@ -595,5 +597,21 @@ sub monitor_fifo {
 		utf8::decode($mess);
 		print "Received from fifo: $mess\n";
 		message($mess);
+	}
+}
+
+sub http_server {
+	my $d = HTTP::Daemon->new(LocalPort => $QUOTES_SERVER_PORT) || print "Warning: could not start webserver.\n";
+	while (my $c = $d->accept) {
+		my $r = $c->get_request;
+		if ($r) {
+			if ($r->method eq "GET") {
+				my $path = $r->url->path();
+				$path = fileparse($path); # basename
+				$c->send_file_response("quotes/" . $path);
+			}
+		}
+		$c->close;
+		undef($c);
 	}
 }
