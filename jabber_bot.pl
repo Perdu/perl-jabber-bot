@@ -15,6 +15,7 @@ use threads;
 use threads::shared;
 use HTTP::Daemon;
 use File::Basename;
+use Encode qw(encode);
 
 # Dépendances :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
@@ -559,7 +560,7 @@ sub Stop {
 
 sub shortener {
 	my $url = shift;
-	my $full_url = $SHORTENER_URL . "?url=" . encode_base64($url);
+	my $full_url = $SHORTENER_URL . "?url=" . encode_base64(encode("UTF-8", $url));
 	my $mech = WWW::Mechanize->new(autocheck => 0, max_size => $MECHANIZE_MAX_SIZE, timeout=> $MECHANIZE_TIMEOUT);
 	my $res = "";
 	my $ans = "";
