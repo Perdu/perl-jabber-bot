@@ -236,6 +236,7 @@ sub on_public
 	    $mess .= "- !quote [add] [<nick>] [recherche]: Citation aléatoire.\n";
 	    $mess .= "- !quote list : Liste tous les auteurs\n";
 	    $mess .= "- !quotes <nick> : Donne toutes les citations d'un auteur\n";
+	    $mess .= "- !quotes search <recherche> : recherche parmi toutes les citations\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
 	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon";
@@ -347,6 +348,18 @@ sub on_public
 		    }
 	    } else {
 		    $mess = "Aucune citation trouvée pour $1";
+	    }
+    } elsif ($text =~ /^!quotes search ([\w\s]+)\s*$/) {
+	    my $search = $1;
+	    # Search for the keyword in all the quotes
+	    foreach my $q (@quotes_all) {
+		    if ($q =~ /$search/) {
+			    $mess .= $q;
+		    }
+	    }
+	    chomp($mess);
+	    if ($mess eq "") {
+		    $mess = "Aucune citation trouvée.";
 	    }
     } elsif ($text =~ /^!quotes (\w+)\s*$/) {
 	    if (defined $quotes{$1}) {
