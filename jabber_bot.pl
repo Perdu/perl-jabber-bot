@@ -633,8 +633,12 @@ sub http_server {
 		if ($r) {
 			if ($r->method eq "GET") {
 				my $path = $r->url->path();
-				$path = fileparse($path); # basename
-				$c->send_file_response("quotes/" . $path);
+				my $file = fileparse($path); # basename
+				if ($path eq "/search/$file") {
+					$c->send_file_response("quotes/search/" . $file);
+				} else {
+					$c->send_file_response("quotes/" . $file);
+				}
 			}
 		}
 		$c->close;
