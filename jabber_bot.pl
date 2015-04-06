@@ -351,15 +351,27 @@ sub on_public
 	    }
     } elsif ($text =~ /^!quotes search ([\w\s]+)\s*$/) {
 	    my $search = $1;
+	    my $nb_results = 0;
 	    # Search for the keyword in all the quotes
 	    foreach my $q (@quotes_all) {
 		    if ($q =~ /$search/) {
 			    $mess .= $q;
+			    $nb_results++;
 		    }
 	    }
 	    chomp($mess);
-	    if ($mess eq "") {
+	    if ($nb_results == 0) {
 		    $mess = "Aucune citation trouvée.";
+	    } elsif ($nb_results > 5) {
+		    # If there are more than 5 results, send a link to
+		    # a file containing the results instead
+		    if (! -d "quotes/search") {
+			    mkdir "quotes/search";
+		    }
+		    open(my $fh, ">", "quotes/search/" . $1);
+		    print $fh $mess;
+		    close($fh);
+		    $mess = $QUOTES_EXTERNAL_URL . "search/" . $1;
 	    }
     } elsif ($text =~ /^!quotes (\w+)\s*$/) {
 	    if (defined $quotes{$1}) {
