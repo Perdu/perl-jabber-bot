@@ -376,10 +376,17 @@ sub on_public
 		    if (! -d "quotes/search") {
 			    mkdir "quotes/search";
 		    }
-		    open(my $fh, ">", "quotes/search/" . $1);
+		    my $filename = $1;
+		    # Strip non-ascii character from filename
+		    # (HTTP::Daemon does not handle them)
+		    $filename =~ s/[^[:ascii:]]//g;
+		    if ($filename eq "") {
+			    $filename = random_string();
+		    }
+		    open(my $fh, ">", "quotes/search/" . $filename);
 		    print $fh $mess;
 		    close($fh);
-		    $mess = $QUOTES_EXTERNAL_URL . "search/" . $1;
+		    $mess = $QUOTES_EXTERNAL_URL . "search/" . $filename;
 	    }
     } elsif ($text =~ /^!quotes (\w+)\s*$/) {
 	    if (defined $quotes{$1}) {
@@ -651,4 +658,11 @@ sub http_server {
 		$c->close;
 		undef($c);
 	}
+}
+
+sub random_string {
+	my @chars = ("a".."z");
+	my $string = "";
+	$string .= $chars[rand @chars] for 1..8;
+	return $string;
 }
