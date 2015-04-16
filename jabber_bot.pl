@@ -239,10 +239,17 @@ sub on_public
 	    $mess .= "- !quotes <nick> : Donne toutes les citations d'un auteur\n";
 	    $mess .= "- !quotes search <recherche> : recherche parmi toutes les citations\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
+	    $mess .= "- !isit [nick@ : Deviner de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
 	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon";
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
+    } elsif ($text =~ /!who\s+(\w+)/ || $text =~ /!isit\s+(\w+)/) {
+	    if ($1 eq $last_author) {
+		    $mess = "Oui !";
+	    } else {
+		    $mess = "Non !";
+	    }
     } elsif ($text eq "!quote list") {
 	    opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
 	    my @docs = grep{ !/^\..*/ } readdir($DIR);
