@@ -16,6 +16,8 @@ use threads::shared;
 use HTTP::Daemon;
 use File::Basename;
 use Encode qw(encode);
+use HTTP::Status;
+use HTTP::Date qw(time2str);
 
 # Dépendances :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
@@ -651,14 +653,48 @@ sub http_server {
 				my $path = $r->url->path();
 				my $file = fileparse($path); # basename
 				if ($path eq "/search/$file") {
-					$c->send_file_response("quotes/search/" . $file);
+					send_file_response($c, "quotes/search/" . $file);
 				} else {
-					$c->send_file_response("quotes/" . $file);
+					send_file_response($c, "quotes/" . $file);
 				}
 			}
 		}
 		$c->close;
 		undef($c);
+	}
+}
+
+# rewrite HTTP::daemon's module because it wouldn't allow one to change headers
+sub send_file_response {
+	my($self, $file) = @_;
+	my $CRLF = "\015\012";   # "\r\n" is not portable
+	if (-d $file) {
+		$self->send_dir($file);
+	}
+	elsif (-f _) {
+		# plain file
+		local(*F);
+		sysopen(F, $file, 0) or
+		    return $self->send_error(RC_FORBIDDEN);
+		binmode(F);
+#		my($ct,$ce) = guess_media_type($file);
+		# We're working with utf8-encoded files only, and
+		# guess_media_type() fails to recognize that.
+		my $ct = "text/plain; charset=utf8";
+		my($size,$mtime) = (stat _)[7,9];
+		unless ($self->antique_client) {
+			$self->send_basic_header;
+			print $self "Content-Type: $ct$CRLF";
+#			print $self "Content-Encoding: $ce$CRLF" if $ce;
+			print $self "Content-Length: $size$CRLF" if $size;
+			print $self "Last-Modified: ", time2str($mtime), "$CRLF" if $mtime;
+			print $self $CRLF;
+		}
+		$self->send_file(\*F) unless $self->head_request;
+		return RC_OK;
+	}
+	else {
+		$self->send_error(RC_NOT_FOUND);
 	}
 }
 
