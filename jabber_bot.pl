@@ -323,12 +323,14 @@ sub on_public
 	    my $theme = $1;
 	    my $quote = $2;
 	    chomp($quote);
+	    my $quote_utf8 = $quote;
+	    utf8::encode($quote_utf8);
 	    $quotes{$theme}[scalar @{ $quotes{$theme} }] = $quote;
 	    my $quote_nb = scalar @quotes_all;
 	    $quotes_all[$quote_nb] = $quote; # Also add quote to the array containing all quotes
 	    $authors[$quote_nb] = "$1";
 	    open (my $quotes_files_fh, '>>', "$dir_quotes/$theme") or die "could not open $dir_quotes/$theme";
-	    print $quotes_files_fh $quote . "\n";
+	    print $quotes_files_fh $quote_utf8 . "\n";
 	    close($quotes_files_fh);
 	    $mess = "Citation ajoutée pour $theme : $quote";
     } elsif ($text =~ /^!quote (\w+)\s*(.*)$/) {
