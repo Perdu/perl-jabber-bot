@@ -37,6 +37,8 @@ my $quiet = 0;
 my $ignore_msg = 0;
 my $joke_points_file = "points_blague";
 
+my $dir_defs = "defs";
+
 my $dir_quotes = "quotes";
 my %quotes;
 my @quotes_all;
@@ -66,6 +68,10 @@ my $FIFOPATH = "fifo";
 
 if (-f $joke_points_file) {
 	$joke_points = retrieve($joke_points_file);
+}
+
+if (! -d "$dir_defs") {
+	mkdir "$dir_defs";
 }
 
 opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
@@ -243,7 +249,9 @@ sub on_public
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
 	    $mess .= "- !isit [nick@ : Deviner de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
-	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon";
+	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon\n";
+	    $mess .= "- !! <nom> = <def> : ajouter une définition\n";
+	    $mess .= "- ?? <nom> : lire une définition";
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
     } elsif ($text =~ /!who\s+(\w+)/ || $text =~ /!isit\s+(\w+)/) {
@@ -419,6 +427,29 @@ sub on_public
     } elsif ($text =~ /(http(s)?:\/\/[^ ]+)/) {
 	    $prev_link = $1;
 	    $mess = shortener($1);
+    } elsif ($text =~ /!!\s*([\w ]+?)\s*=\s*(.*)\s*$/) {
+	    my $name = $1;
+	    my $def = $2;
+	    if (-f "$dir_defs/$name") {
+		    open (my $def_file_fh, '<', "$dir_defs/$name") or die "could not open $dir_defs/$name";
+		    my $prev_def = <$def_file_fh>;
+		    close ($def_file_fh);
+		    $mess = "Définition modifiée pour $name : $def\nDéfinition précédente : $prev_def";
+	    } else {
+		    $mess = "Définition ajoutée pour $name : $def";
+	    }
+	    open (my $def_file_fh, '>', "$dir_defs/$name") or die "could not open $dir_defs/$name";
+	    print $def_file_fh $def;
+	    close($def_file_fh);
+    } elsif ($text =~ /\?\?\s*([\w ]+?)\s*$/) {
+	    my $name = $1;
+	    if (! -f "$dir_defs/$name") {
+		    $mess = "$name : Non défini";
+	    } else {
+		    open (my $def_file_fh, '<', "$dir_defs/$name") or die "could not open $dir_defs/$name";
+		    $mess = <$def_file_fh>;
+		    close ($def_file_fh);
+	    }
     }
     #elsif ($text =~ /(?:^|\W)(connard|pd|pédé|fdp|gay|retardé|mac-user|con|
 #                        débile|polard|noob)(?:\W|$)/ix) {
