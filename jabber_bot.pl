@@ -413,6 +413,9 @@ sub on_public
 	my $scale = ($res =~ /\//)? "scale=3; " : "";
 	$mess = "$res = " . `echo "$scale$res" | bc`;
 	chomp($mess);
+    } elsif ($text =~ /(http(s)?:\/\/[^ ]+)/) {
+	    $prev_link = $1;
+	    $mess = shortener($1);
     } elsif ($text =~ /^(.*?)[,:]? [:xX]([Dd]+)$/) {
 	    my $nb_d = length $2;
 	    # Only add joke points if the joker already has quote points...
@@ -424,9 +427,6 @@ sub on_public
 		    $joke_points->{$joker} += $nb_d;
 		    print "+$nb_d points blague pour $joker (" . $joke_points->{$joker} . ")\n";
 	    }
-    } elsif ($text =~ /(http(s)?:\/\/[^ ]+)/) {
-	    $prev_link = $1;
-	    $mess = shortener($1);
     } elsif ($text =~ /!!\s*([\w ]+?)\s*=\s*(.*)\s*$/) {
 	    my $name = $1;
 	    my $def = $2;
