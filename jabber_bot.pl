@@ -731,7 +731,7 @@ sub cyberize {
 	my($mess, $proba) = @_;
 	my $new_mess = $mess;
 	my $first = 1;
-	while ($mess =~ /(\w{$MIN_WORLD_LENGTH,})/g) {
+	while ($mess =~ / (\w{$MIN_WORLD_LENGTH,})/g) {
 		if ($first == 1) {
 			$first = 0;
 		} else {
