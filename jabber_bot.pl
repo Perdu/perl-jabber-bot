@@ -65,6 +65,9 @@ my $QUOTES_SERVER_PORT = 11421;
 my $QUOTES_EXTERNAL_URL = "http://ploudseeker.com:$QUOTES_SERVER_PORT/";
 
 my $FIFOPATH = "fifo";
+my $MIN_WORLD_LENGTH = 5;
+
+my $cyber_proba = 0.5;
 
 if (-f $joke_points_file) {
 	$joke_points = retrieve($joke_points_file);
@@ -241,6 +244,7 @@ sub on_public
 	    $mess .= "- !alias <nick1> <nick2> : donne les points blague de nick2 à nick1\n";
 	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
 	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
+	    $mess .= "- !cyber [<proba>]: Active le cyber-mode cyber.\n";
 	    $mess .= "- !philo : Dicte une phrase philosophique profonde.\n";
 	    $mess .= "- !quote [add] [<nick>] [recherche]: Citation aléatoire.\n";
 	    $mess .= "- !quote list : Liste tous les auteurs\n";
@@ -413,6 +417,12 @@ sub on_public
 	my $scale = ($res =~ /\//)? "scale=3; " : "";
 	$mess = "$res = " . `echo "$scale$res" | bc`;
 	chomp($mess);
+    } elsif ($text =~ /^!cyber\s*0\s*$/) {
+	    $cyber_proba = 0;
+	    $mess = "Mode cyber désactivé.";
+    } elsif ($text =~ /^!cyber (0[.,]\d+)$/) {
+	    $cyber_proba = $1;
+	    $mess = "Mode cyber: probabilité définie à $1";
     } elsif ($text =~ /(http(s)?:\/\/[^ ]+)/) {
 	    $prev_link = $1;
 	    $mess = shortener($1);
@@ -485,6 +495,9 @@ sub on_public
 	    }
     }
     if ($mess ne "") {
+	    if ($cyber_proba > 0) {
+		    $mess = cyberize($mess, $cyber_proba);
+	    }
 	    message($mess);
 	    $joker = $own_nick;
     }
@@ -735,3 +748,26 @@ sub random_string {
 	$string .= $chars[rand @chars] for 1..8;
 	return $string;
 }
+
+sub cyberize {
+	my($mess, $proba) = @_;
+	my $new_mess = $mess;
+	my $first = 1;
+	while ($mess =~ /(\w{$MIN_WORLD_LENGTH,})/g) {
+		if ($first == 1) {
+			$first = 0;
+		} else {
+			my $r = rand;
+			print $r;
+			if ($r < $proba) {
+				# matches the word NOT preceded by "cyber"
+				# (so that "foo foo" gets tranformed into
+				# "cyberfoo cyberfoo" and not "cybercyberfoo
+				# foo")
+				$new_mess =~ s/(?<!cyber)($1)/cyber$1/;
+			}
+		}
+	}
+	return $new_mess;
+}
+
