@@ -145,7 +145,7 @@ if ($result[0] ne "ok") {
 print "Sending presence\n";
 $Con->PresenceSend();
 
-print "Trying to join $room$server...\n";
+print "Trying to join $room\@$server...\n";
 $Con->MUCJoin(
 	room=> $room,
 	server=> $server,
