@@ -242,7 +242,7 @@ sub on_public
 	    $mess .= "- !quotes <nick> : Donne toutes les citations d'un auteur\n";
 	    $mess .= "- !quotes search <recherche> : recherche parmi toutes les citations\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
-	    $mess .= "- !isit [nick@ : Deviner de qui est la citation précédente.\n";
+	    $mess .= "- !isit <nick> : Deviner de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
 	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon\n";
 	    $mess .= "- !! <nom> = <def> : ajouter une définition\n";
