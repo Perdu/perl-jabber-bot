@@ -19,6 +19,7 @@ use Encode qw(encode);
 use HTTP::Status;
 use HTTP::Date qw(time2str);
 use Config::Tiny;
+use Date::Parse;
 
 # Dependancies :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
@@ -182,10 +183,10 @@ sub on_public
     my $resource;
     ($resource, $nick) = split('/', $nick);
 
-    # Ugly workaround to the fact that backlog messages are considered as
-    # normal messages: ignores messages during the first 5 seconds (a raspberry
-    # pi is slow)
-    if (time() < $join_time + 10) {
+    # Do not reply to backlog messages
+    my $timestamp = str2time($message->GetTimeStamp());
+    if ($timestamp < $join_time) {
+	    print "$timestamp : Backlog message : $text\n";
 	    return;
     }
 
