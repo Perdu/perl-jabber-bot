@@ -24,7 +24,7 @@ use HTTP::Date qw(time2str);
 # libfile-slurp-perl (Debian) / perl-file-slurp (archlinux)
 # libcrypt-ssleay-perl(Debian) / perl-crypt-ssleay (archlinux) (for https links)
 
-##################### Variables ##############################################
+##################### Configuration variables ################################
 
 # Connection options configuration (server, login) :
 my $server = 'chat.jabberfr.org';
@@ -32,43 +32,40 @@ my $room = "ensimag"; # also first param
 my $con_server = 'im.apinc.org';
 my $login = 'discussiondiscussion';
 my $own_nick = 'anu';
-my $nb = 0; # bot number
 my $admin = 'Perdu';
 my $pass = "skldv,slklmLKJsdkf9078";
-my $quiet = 0;
-my $ignore_msg = 0;
+
+# Dir and file names
 my $joke_points_file = "points_blague";
-
 my $dir_defs = "defs";
-
 my $dir_quotes = "quotes";
-my %quotes;
-my @quotes_all;
-my @authors;
 my $file_philosophie = "zoubida.txt";
-my @philo;
-my $last_author = "Le silence est d'or.";
-
-my $min_number_for_talking = 2000;
-
-my $joke_points;
-my $joker = $own_nick;
-my $prev_joker = $joker;
-
-my $prev_link = "";
-my $MIN_LINK_SIZE = 100; # 0 = always shorten
-my $MAX_TITLE_SIZE = 200;
+my $FIFOPATH = "fifo";
 my $SHORTENER_URL = "http://raspi/s/";
 my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
-my $MECHANIZE_TIMEOUT = 10; # Max time to wait while does not respond
-my $MECHANIZE_MAX_SIZE = 1000000; # 1 MB
 my $QUOTES_SERVER_PORT = 11421;
 my $QUOTES_EXTERNAL_URL = "http://ploudseeker.com:$QUOTES_SERVER_PORT/";
 
-my $FIFOPATH = "fifo";
-my $MIN_WORLD_LENGTH = 5;
+my $last_author = "Le silence est d'or.";
+my $min_number_for_talking = 2000;
+my $MIN_LINK_SIZE = 100; # 0 = always shorten
+my $MAX_TITLE_SIZE = 200;
+my $MECHANIZE_TIMEOUT = 10; # Max time to wait while does not respond
+my $MECHANIZE_MAX_SIZE = 1000000; # 1 MB
+my $MIN_WORD_LENGTH = 5; # for cyber
 
+##################### Other variables ########################################
+
+my %quotes;
+my @quotes_all;
+my @authors;
+my @philo;
+my $joke_points;
+my $joker = $own_nick;
+my $prev_joker = $joker;
+my $quiet = 0;
 my $cyber_proba = 0;
+my $prev_link = "";
 
 ############################# Main ###########################################
 
@@ -705,7 +702,7 @@ sub cyberize {
 	my($mess, $proba) = @_;
 	my $new_mess = $mess;
 	my $first = 1;
-	while ($mess =~ / (\w{$MIN_WORLD_LENGTH,})/g) {
+	while ($mess =~ / (\w{$MIN_WORD_LENGTH,})/g) {
 		if ($first == 1) {
 			$first = 0;
 		} else {
