@@ -28,8 +28,16 @@ use Date::Parse;
 
 ##################### Configuration variables ################################
 
+my $config_file = 'jabber_bot.conf';
+
 my $C = Config::Tiny->new;
-$C = Config::Tiny->read( 'jabber_bot.conf' );
+$C = Config::Tiny->read( $config_file );
+
+if (! defined $C) {
+        print "Could not find config file $config_file.\n";
+	print "Please copy it from $config_file.example and fill it appropiately.\n.";
+	exit 1;
+}
 
 # Connection options configuration (server, login) :
 my $server = $C->{Connexion}->{server};
