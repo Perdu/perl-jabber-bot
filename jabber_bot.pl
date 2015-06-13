@@ -545,13 +545,6 @@ sub on_private
     }
 }
 
-sub on_other_part
-{
-   my ($conn, $event) = @_;
-   message("Enfin débarrassé de ce sale enfoiré $event->{'nick'} !");
-   print "<" . $event->{'nick'} . ">Déconnexion.\n";
-}
-
 # Reconnect to the server when we die.
 sub on_disconnect {
     my ($self, $event) = @_;
@@ -748,4 +741,3 @@ sub cyberize {
 	}
 	return $new_mess;
 }
-
