@@ -1,7 +1,10 @@
 # anu
-Awesome Network User
+*A*wesome *N*etwork *U*ser
+
 An awesome Jabber bot. It can tell you how funny are people in the room, remember tons of quotes and definitions, shorten URL and display the page's title... How cool is that?
+
 Also, "anu" is almost ROT1 for "bot". Almost.
+
 
 Here's the help message (in French), which gives you a (non-exhaustive) overview of the functionalities:
 
@@ -27,4 +30,5 @@ Commandes disponibles :
 
 
 Coded in English, but talks in French. If you want it to talk in English or another language, translate it or contact me.
+
 Also, IRC support could probably be added quite easily.
