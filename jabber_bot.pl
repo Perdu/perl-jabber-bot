@@ -141,7 +141,6 @@ my @result = $Con->AuthSend(username => $login,
 if ($result[0] ne "ok") {
   die "Ident/Auth with server failed: $result[0] - $result[1]\n";
 }
-#if($result[0] eq "401") { tryregister(); }
 
 print "Sending presence\n";
 $Con->PresenceSend();
@@ -165,29 +164,6 @@ my $thr2 = threads->create('http_server', '');
 while(defined($Con->Process())) {}
 
 Stop();
-
-#sub tryregister {
-#	print "Failed to authenticate, trying to register...\n";
-#	my @result = $Con->RegisterSend(username => $username,
-#					resource => "Bot",
-#					password => $pass,
-#					email    => "tohwiq\@gmail.com",
-#					key      => "wat"
-#				 );
-#	print "RegisterSend", \@result;
-#}
-
-
-#sub on_connect() {
-#    my ($conn, $event) = @_;
-#    print "Joining $channel...";
-#    $conn->join($channel);
-#
-#    use Data::Dumper;
-#    print Data::Dumper->Dump([\$conn, \$event], [qw(conn event)]);
-#
-#    $conn->{'connected'} = 1;
-#}
 
 sub on_public
 {
