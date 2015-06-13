@@ -5,12 +5,12 @@
 server = chat.jabberfr.org
 # Room name to join.
 # This his is also the first param, i.e. you can do ./jabber_bot.pl <room>
-room = ensimag
+room = anu
 # Connection server, to which you have a registered account
 con_server = im.apinc.org
 # login for the connection server
-login = discussiondiscussion
-pass = skldv,slklmLKJsdkf9078
+login = YOUR_LOGIN
+pass = YOUR_PASSWORD
 
 # Dir and file names and addresses
 [Paths]
@@ -23,19 +23,20 @@ file_philosophy = zoubida.txt
 fifopath = fifo
 # url to the shortener. See shortener/README.txt.
 # You can define a local and an external address
-shortener_url = http://raspi/s/
+# Yea, you can use mine. I'd appreciate if you used your own, though
+shortener_url = https://ploudseeker.com/s/
 shortener_external_url = https://ploudseeker.com/s/
 # URL for the quotes server. This is a simple HTTP server created in a thread of the bot.
 # Just make sure it's reachable from the internet
 quotes_server_port = 11421
-quotes_external_url = http://ploudseeker.com:$QUOTES_SERVER_PORT/
+quotes_external_url = http://YOUR_DOMAINE_NAME_OR_IP
 
 [Other]
 bot_nick = anu
 # The bot's admin's nick. He will have several supplementary rights on the bot.
 # (e.g. make the bot quiet and handle joke points)
 # Beware: there is NO JID verification
-admin = Perdu
+admin = YOUR_NICK
 # The bot has an internal variable p.
 # Everytime the bot sees a message, p is incremented by 1.
 # He then generates a random number between 0 and min_number_for_talking, and

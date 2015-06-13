@@ -55,7 +55,7 @@ my $FIFOPATH = $C->{Paths}->{fifopath};
 my $SHORTENER_URL = $C->{Paths}->{shortener_url};
 my $SHORTENER_EXTERNAL_URL = $C->{Paths}->{shortener_external_url};
 my $QUOTES_SERVER_PORT = $C->{Paths}->{quotes_server_port};
-my $QUOTES_EXTERNAL_URL = $C->{Paths}->{quotes_external_url};
+my $QUOTES_EXTERNAL_URL = $C->{Paths}->{quotes_external_url} . ":$QUOTES_SERVER_PORT/";
 
 # Other
 my $own_nick = $C->{Other}->{bot_nick};
