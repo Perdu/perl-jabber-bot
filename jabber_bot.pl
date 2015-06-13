@@ -18,6 +18,7 @@ use File::Basename;
 use Encode qw(encode);
 use HTTP::Status;
 use HTTP::Date qw(time2str);
+use Config::Tiny;
 
 # Dependancies :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
@@ -26,33 +27,37 @@ use HTTP::Date qw(time2str);
 
 ##################### Configuration variables ################################
 
+my $C = Config::Tiny->new;
+$C = Config::Tiny->read( 'jabber_bot.conf' );
+
 # Connection options configuration (server, login) :
-my $server = 'chat.jabberfr.org';
-my $room = "ensimag"; # also first param
-my $con_server = 'im.apinc.org';
-my $login = 'discussiondiscussion';
-my $own_nick = 'anu';
-my $admin = 'Perdu';
-my $pass = "skldv,slklmLKJsdkf9078";
+my $server = $C->{Connexion}->{server};
+my $room = $C->{Connexion}->{room};
+my $con_server = $C->{Connexion}->{con_server};
+my $login = $C->{Connexion}->{login};
+my $pass = $C->{Connexion}->{pass};
 
 # Dir and file names
-my $joke_points_file = "points_blague";
-my $dir_defs = "defs";
-my $dir_quotes = "quotes";
-my $file_philosophie = "zoubida.txt";
-my $FIFOPATH = "fifo";
-my $SHORTENER_URL = "http://raspi/s/";
-my $SHORTENER_EXTERNAL_URL = "https://ploudseeker.com/s/";
-my $QUOTES_SERVER_PORT = 11421;
-my $QUOTES_EXTERNAL_URL = "http://ploudseeker.com:$QUOTES_SERVER_PORT/";
+my $joke_points_file = $C->{Paths}->{joke_points_file};
+my $dir_defs = $C->{Paths}->{dir_defs};
+my $dir_quotes = $C->{Paths}->{dir_quotes};
+my $file_philosophy = $C->{Paths}->{file_philosophy};
+my $FIFOPATH = $C->{Paths}->{fifopath};
+my $SHORTENER_URL = $C->{Paths}->{shortener_url};
+my $SHORTENER_EXTERNAL_URL = $C->{Paths}->{shortener_external_url};
+my $QUOTES_SERVER_PORT = $C->{Paths}->{quotes_server_port};
+my $QUOTES_EXTERNAL_URL = $C->{Paths}->{quotes_external_url};
 
-my $last_author = "Le silence est d'or.";
-my $min_number_for_talking = 2000;
-my $MIN_LINK_SIZE = 100; # 0 = always shorten
-my $MAX_TITLE_SIZE = 200;
-my $MECHANIZE_TIMEOUT = 10; # Max time to wait while does not respond
-my $MECHANIZE_MAX_SIZE = 1000000; # 1 MB
-my $MIN_WORD_LENGTH = 5; # for cyber
+# Other
+my $own_nick = $C->{Other}->{bot_nick};
+my $admin = $C->{Other}->{admin};
+my $last_author = $C->{Other}->{sentence_no_author};
+my $min_number_for_talking = $C->{Other}->{min_number_for_talking};
+my $MIN_LINK_SIZE = $C->{Other}->{min_link_size};
+my $MAX_TITLE_SIZE = $C->{Other}->{max_title_size};
+my $MECHANIZE_TIMEOUT = $C->{Other}->{mechanize_timeout};
+my $MECHANIZE_MAX_SIZE = $C->{Other}->{mechanize_max_size};
+my $MIN_WORD_LENGTH = $C->{Other}->{min_word_length};
 
 ##################### Other variables ########################################
 
@@ -97,7 +102,7 @@ foreach my $d (@docs) {
     close($res);
 }
 
-open (my $res, $file_philosophie) or die "could not open $file_philosophie";
+open (my $res, $file_philosophy) or die "could not open $file_philosophy";
 my $i = 1;
 while(<$res>){
 	$philo[$i] = $_;
