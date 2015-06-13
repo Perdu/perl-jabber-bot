@@ -19,12 +19,14 @@ use Encode qw(encode);
 use HTTP::Status;
 use HTTP::Date qw(time2str);
 
-# Dépendances :
+# Dependancies :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
 # libfile-slurp-perl (Debian) / perl-file-slurp (archlinux)
-# libcrypt-ssleay-perl(Debian) / perl-crypt-ssleay (archlinux) (pour les liens https)
+# libcrypt-ssleay-perl(Debian) / perl-crypt-ssleay (archlinux) (for https links)
 
-# Configuration des options de connexion (serveur, login) :
+##################### Variables ##############################################
+
+# Connection options configuration (server, login) :
 my $server = 'chat.jabberfr.org';
 my $room = "ensimag"; # also first param
 my $con_server = 'im.apinc.org';
@@ -42,7 +44,6 @@ my $dir_defs = "defs";
 my $dir_quotes = "quotes";
 my %quotes;
 my @quotes_all;
-# $authors[$i] saif $quotes_all[$i]
 my @authors;
 my $file_philosophie = "zoubida.txt";
 my @philo;
@@ -68,6 +69,8 @@ my $FIFOPATH = "fifo";
 my $MIN_WORLD_LENGTH = 5;
 
 my $cyber_proba = 0.5;
+
+############################# Main ###########################################
 
 if (-f $joke_points_file) {
 	$joke_points = retrieve($joke_points_file);
@@ -164,6 +167,8 @@ my $thr2 = threads->create('http_server', '');
 while(defined($Con->Process())) {}
 
 Stop();
+
+############################ Submodules #######################################
 
 sub on_public
 {
