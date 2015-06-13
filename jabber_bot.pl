@@ -68,7 +68,7 @@ my $QUOTES_EXTERNAL_URL = "http://ploudseeker.com:$QUOTES_SERVER_PORT/";
 my $FIFOPATH = "fifo";
 my $MIN_WORLD_LENGTH = 5;
 
-my $cyber_proba = 0.5;
+my $cyber_proba = 0;
 
 ############################# Main ###########################################
 
