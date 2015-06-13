@@ -25,6 +25,8 @@ use Date::Parse;
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
 # libfile-slurp-perl (Debian) / perl-file-slurp (archlinux)
 # libcrypt-ssleay-perl(Debian) / perl-crypt-ssleay (archlinux) (for https links)
+# libconfig-tiny-perl (Debian) / perl-config-tiny (archlinux)
+# perl-timedate (archlinux)
 
 ##################### Configuration variables ################################
 
