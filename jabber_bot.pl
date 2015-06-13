@@ -258,7 +258,7 @@ sub on_public
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
     } elsif ($text =~ /!who\s+(\w+)/ || $text =~ /!isit\s+(\w+)/) {
-	    if ($1 eq $last_author) {
+	    if (lc $1 eq lc $last_author) {
 		    $mess = "Oui !";
 	    } else {
 		    $mess = "Non !";
