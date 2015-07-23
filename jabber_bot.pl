@@ -252,7 +252,10 @@ sub on_public
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
     } elsif ($text =~ /!who\s+(\w+)/ || $text =~ /!isit\s+(\w+)/) {
-	    if (lc $1 eq lc $last_author) {
+	    if ($last_author eq "random" or $last_author eq "answer") {
+		    $mess = "Ne cherche pas, je n'en sais rien !";
+	    }
+	    elsif (lc $1 eq lc $last_author) {
 		    $mess = "Oui !";
 	    } else {
 		    $mess = "Non !";
