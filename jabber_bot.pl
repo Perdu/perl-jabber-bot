@@ -134,6 +134,7 @@ my $p = 0;
 my $Con = new Net::Jabber::Client();
 my $prev_msg = "";
 my $prev_nick = "";
+my $join_time;
 
 $SIG{HUP} = \&Stop;
 $SIG{KILL} = \&Stop;
@@ -161,14 +162,7 @@ if ($result[0] ne "ok") {
 print "Sending presence\n";
 $Con->PresenceSend();
 
-print "Trying to join $room\@$server...\n";
-$Con->MUCJoin(
-	room=> $room,
-	server=> $server,
-	nick=> $own_nick,
-);
-
-my $join_time = time();
+join_muc($room, $server, $own_nick);
 
 # Install hook functions:
 $Con->SetCallBacks("presence" => \&on_other_join);
@@ -182,6 +176,18 @@ while(defined($Con->Process())) {}
 Stop();
 
 ############################ Submodules #######################################
+
+sub join_muc {
+	my ($room, $server, $own_nick) = @_;
+	print "Trying to join $room\@$server...\n";
+	$Con->MUCJoin(
+		room=> $room,
+		server=> $server,
+		nick=> $own_nick,
+	);
+
+	$join_time = time();
+}
 
 sub on_public
 {
@@ -652,7 +658,11 @@ sub monitor_fifo {
 		chomp($mess);
 		utf8::decode($mess);
 		print "Received from fifo: $mess\n";
-		message($mess);
+		if ($mess eq "reco") {
+			join_muc($room, $server, $own_nick);
+		} else {
+			message($mess);
+		}
 	}
 }
 
