@@ -511,6 +511,10 @@ sub on_other_join
     print "  Status: $status ($show)\n";
     print "===\n";
 
+    if ($from eq $own_nick and $type eq "unavailable") {
+	    print "Left room (probably got kicked), trying to reconnect.";
+	    join_muc($room, $server, $own_nick);
+    }
 }
 
 sub on_private
