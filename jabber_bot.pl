@@ -21,6 +21,8 @@ use HTTP::Date qw(time2str);
 use Config::Tiny;
 use Date::Parse;
 
+binmode(STDOUT, ":utf8");
+
 # Dependancies :
 # libnet-jabber-perl (Debian) / perl-net-jabber (archlinux)
 # libfile-slurp-perl (Debian) / perl-file-slurp (archlinux)
