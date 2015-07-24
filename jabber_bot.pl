@@ -335,7 +335,7 @@ sub on_public
 	    my $quote_nb = rand(scalar @quotes_all);
 	    $last_author = $authors[$quote_nb];
 	    $mess = convert_quote($quotes_all[$quote_nb], $nick);
-    } elsif ($text =~ /^!quote add (\w+) (.*)$/) {
+    } elsif ($text =~ /^!quote add ([-_\w]+) (.*)$/) {
 	    my $theme = $1;
 	    my $quote = $2;
 	    chomp($quote);
@@ -349,7 +349,7 @@ sub on_public
 	    print $quotes_files_fh $quote_utf8 . "\n";
 	    close($quotes_files_fh);
 	    $mess = "Citation ajoutée pour $theme : $quote";
-    } elsif ($text =~ /^!quote (\w+)\s*(.*)$/) {
+    } elsif ($text =~ /^!quote ([-_\w]+)\s*(.*)$/) {
 	    if (defined $quotes{$1}) {
 		    if ($2 eq '') {
 			    # Give one random quote
@@ -375,7 +375,7 @@ sub on_public
 	    } else {
 		    $mess = "Aucune citation trouvée pour $1";
 	    }
-    } elsif ($text =~ /^!quotes search ([\w\s]+)\s*$/) {
+    } elsif ($text =~ /^!quotes search ([-_\w'’\s]+)\s*$/) {
 	    my $search = $1;
 	    my $nb_results = 0;
 	    # Search for the keyword in all the quotes
@@ -406,7 +406,7 @@ sub on_public
 		    close($fh);
 		    $mess = $QUOTES_EXTERNAL_URL . "search/" . $filename;
 	    }
-    } elsif ($text =~ /^!quotes (\w+)\s*$/) {
+    } elsif ($text =~ /^!quotes ([-_\w]+)\s*$/) {
 	    if (defined $quotes{$1}) {
 		    $mess .= $QUOTES_EXTERNAL_URL . $1;
 	    } else {
@@ -439,7 +439,7 @@ sub on_public
 		    $joke_points->{$joker} += $nb_d;
 		    print "+$nb_d points blague pour $joker (" . $joke_points->{$joker} . ")\n";
 	    }
-    } elsif ($text =~ /!!\s*([\w ]+?)\s*=\s*(.*)\s*$/) {
+    } elsif ($text =~ /!!\s*([-_\w'’ ]+?)\s*=\s*(.*)\s*$/) {
 	    my $name = $1;
 	    my $def = $2;
 	    if (-f "$dir_defs/$name") {
@@ -453,7 +453,7 @@ sub on_public
 	    open (my $def_file_fh, '>', "$dir_defs/$name") or die "could not open $dir_defs/$name";
 	    print $def_file_fh $def;
 	    close($def_file_fh);
-    } elsif ($text =~ /\?\?\s*([\w ]+?)\s*$/) {
+    } elsif ($text =~ /\?\?\s*([-_\w'’ ]+?)\s*$/) {
 	    my $name = $1;
 	    if (! -f "$dir_defs/$name") {
 		    $mess = "$name : Non défini";
