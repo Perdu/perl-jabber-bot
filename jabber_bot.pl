@@ -443,14 +443,14 @@ sub on_public
 	    my $name = $1;
 	    my $def = $2;
 	    if (-f "$dir_defs/$name") {
-		    open (my $def_file_fh, '<', "$dir_defs/$name") or die "could not open $dir_defs/$name";
+		    open (my $def_file_fh, '<:encoding(UTF-8)', "$dir_defs/$name") or die "could not open $dir_defs/$name";
 		    my $prev_def = <$def_file_fh>;
 		    close ($def_file_fh);
 		    $mess = "Définition modifiée pour $name : $def\nDéfinition précédente : $prev_def";
 	    } else {
 		    $mess = "Définition ajoutée pour $name : $def";
 	    }
-	    open (my $def_file_fh, '>', "$dir_defs/$name") or die "could not open $dir_defs/$name";
+	    open (my $def_file_fh, '>:encoding(UTF-8)', "$dir_defs/$name") or die "could not open $dir_defs/$name";
 	    print $def_file_fh $def;
 	    close($def_file_fh);
     } elsif ($text =~ /\?\?\s*([-_\w'’ ]+?)\s*$/) {
@@ -458,7 +458,7 @@ sub on_public
 	    if (! -f "$dir_defs/$name") {
 		    $mess = "$name : Non défini";
 	    } else {
-		    open (my $def_file_fh, '<', "$dir_defs/$name") or die "could not open $dir_defs/$name";
+		    open (my $def_file_fh, '<:encoding(UTF-8)', "$dir_defs/$name") or die "could not open $dir_defs/$name";
 		    $mess = <$def_file_fh>;
 		    close ($def_file_fh);
 	    }
