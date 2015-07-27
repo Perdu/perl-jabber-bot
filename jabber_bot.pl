@@ -496,11 +496,6 @@ sub on_other_join
     my $status = $presence->GetStatus() || "";
     my $show = $presence->GetShow() || "";
 
-    # Ugly workaround, see in sub on_public
-    if (time() < $join_time + 2) {
-	    return;
-    }
-
     my $resource;
     ($resource, $from) = split('/',$from);
     print "===\n";
