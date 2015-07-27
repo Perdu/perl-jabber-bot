@@ -3,7 +3,6 @@
 use strict;
 use warnings;
 use utf8;
-#use feature 'unicode_strings';
 
 use Net::Jabber qw(Client);
 use File::Slurp;
@@ -101,8 +100,6 @@ my $j = 0;
 foreach my $d (@docs) {
     my $full_path = "$dir_quotes/$d";
     open (my $res, $full_path) or die "could not open $full_path";
-    # First line is special
-    # $quotes{$d}[0] = <$res>;
     my $i = 0;
     while(<$res>){
 	    utf8::decode($_);
