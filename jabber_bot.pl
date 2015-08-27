@@ -59,6 +59,7 @@ my $SHORTENER_URL = $C->{Paths}->{shortener_url};
 my $SHORTENER_EXTERNAL_URL = $C->{Paths}->{shortener_external_url};
 my $QUOTES_SERVER_PORT = $C->{Paths}->{quotes_server_port};
 my $QUOTES_EXTERNAL_URL = $C->{Paths}->{quotes_external_url} . ":$QUOTES_SERVER_PORT/";
+my $file_features = $C->{Paths}->{file_features};
 
 # Other
 my $own_nick = $C->{Other}->{bot_nick};
@@ -253,6 +254,7 @@ sub on_public
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
 	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon\n";
 	    $mess .= "- !! <nom> = <def> : ajouter une définition\n";
+	    $mess .= "- !feature add|list : ajouter une demande de feature ou lister toutes les demandes\n";
 	    $mess .= "- ?? <nom> : lire une définition";
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
@@ -424,6 +426,34 @@ sub on_public
     } elsif ($text =~ /^!cyber (0[.,]\d+)$/) {
 	    $cyber_proba = $1;
 	    $mess = "Mode cyber: probabilité définie à $1";
+    } elsif ($text =~ /^!feature add\s+(.*)/) {
+	    my $empty = 0;
+	    if (! -f $file_features) {
+		    $empty = 1;
+	    }
+	    open(my $fh, '>>', $file_features);
+	    my $feature = $1;
+	    # Don't display new line on first line.
+	    if ($empty) {
+		    print $fh $feature;
+	    } else {
+		    print $fh "\n" . $feature;
+	    }
+	    close($fh);
+	    $mess .= "Feature request ajoutée : " . $feature;
+    } elsif ($text eq '!feature list') {
+	    my $empty = 0;
+	    open(my $fh, '<', $file_features) or $empty = 1;
+	    if ($empty) {
+		    $mess = "Aucune feature request. $own_nick est parfait !";
+	    } else {
+		    while (<$fh>) {
+			    if ($_ ne '') {
+				    $mess .= $_;
+			    }
+		    }
+		    close($fh);
+	    }
     } elsif ($text =~ /(http(s)?:\/\/[^ ]+)/) {
 	    $prev_link = $1;
 	    $mess = shortener($1);

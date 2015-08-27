@@ -30,6 +30,8 @@ shortener_external_url = https://ploudseeker.com/s/
 # Just make sure it's reachable from the internet
 quotes_server_port = 11421
 quotes_external_url = http://YOUR_DOMAINE_NAME_OR_IP
+# File to store feature requests
+file_features = features.txt
 
 [Other]
 bot_nick = anu
