@@ -355,7 +355,7 @@ sub on_public
 	    my $nb_results = 0;
 	    # Search for the keyword in all the quotes
 	    foreach my $q (@quotes_all) {
-		    if ($q =~ /$search/) {
+		    if ($q =~ /$search/i) {
 			    $mess .= $q;
 			    $nb_results++;
 		    }
