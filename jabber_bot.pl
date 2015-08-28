@@ -468,10 +468,11 @@ sub on_public
 		    $joke_points->{$joker} += $nb_d;
 		    print "+$nb_d points blague pour $joker (" . $joke_points->{$joker} . ")\n";
 	    }
-    } elsif ($text =~ /!!\s*([-_\w'’ ]+?)\s*=\s*(.*)\s*$/) {
+    } elsif ($text =~ /!!\s*([-_\w'’ ]+?)\s*=\s*(.*)\s*$/s) {
 	    my $name = $1;
 	    my $def = $2;
 	    if (-f "$dir_defs/$name") {
+		    local $/=undef;
 		    open (my $def_file_fh, '<:encoding(UTF-8)', "$dir_defs/$name") or die "could not open $dir_defs/$name";
 		    my $prev_def = <$def_file_fh>;
 		    close ($def_file_fh);
@@ -487,6 +488,7 @@ sub on_public
 	    if (! -f "$dir_defs/$name") {
 		    $mess = "$name : Non défini";
 	    } else {
+		    local $/=undef;
 		    open (my $def_file_fh, '<:encoding(UTF-8)', "$dir_defs/$name") or die "could not open $dir_defs/$name";
 		    $mess = <$def_file_fh>;
 		    close ($def_file_fh);
