@@ -249,6 +249,7 @@ sub on_public
 	    $mess .= "- !quote list : Liste tous les auteurs\n";
 	    $mess .= "- !quotes <nick> : Donne toutes les citations d'un auteur\n";
 	    $mess .= "- !quote search <recherche> : recherche parmi toutes les citations\n";
+	    $mess .= "- !related : Citation en rapport\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
 	    $mess .= "- !isit <nick> : Deviner de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
@@ -266,6 +267,14 @@ sub on_public
 		    $mess = "Oui !";
 	    } else {
 		    $mess = "Non !";
+	    }
+    } elsif ($text eq "!related") {
+	    my $quote = find_related_quote($prev_msg);
+	    if ($quote eq "") {
+		    $mess .= "Aucune citation trouvée";
+	    } else {
+		    $mess .= $quote;
+		    chomp($mess);
 	    }
     } elsif ($text eq "!quote list") {
 	    opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
@@ -777,4 +786,29 @@ sub cyberize {
 		}
 	}
 	return $new_mess;
+}
+
+sub find_related_quote {
+	my $msg = shift;
+	my @words;
+	# keep words longer than $MIN_WORD_LENGTH
+	while ($msg =~ /(\w{$MIN_WORD_LENGTH,})([ ,\.]|$)/g) {
+		push @words, $1;
+	}
+	while (scalar @words != 0) {
+		my $r = rand(scalar @words);
+		my $word = $words[$r];
+		my @related_quotes;
+		foreach my $q (@quotes_all) {
+			if ($q =~ /$word/i) {
+				push @related_quotes, $q;
+			}
+		}
+		if (scalar @related_quotes > 0) {
+			return $related_quotes[rand(scalar @related_quotes)];
+		} else {
+			delete $words[$r];
+		}
+	}
+	return "";
 }
