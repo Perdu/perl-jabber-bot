@@ -508,11 +508,19 @@ sub on_public
 	    my $rand = int(rand($min_number_for_talking));
 	    #print "$rand, $p\n";
 	    if ($rand < $p) {
-		    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random))
-		    # in other words, number of quotes in quotes.txt
-		    my $quote_nb = rand(scalar @quotes_all);
-		    $mess = convert_quote($quotes_all[$quote_nb], $nick);
-		    $last_author = $authors[$quote_nb];
+		    my $quote = find_related_quote($text);
+		    if ($quote ne "") {
+			    $mess = $quote;
+			    chomp($mess);
+			    # To do: find last author here
+		    } else {
+			    # No related quote found, give a random quote.
+			    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random))
+			    # in other words, number of quotes in quotes.txt
+			    my $quote_nb = rand(scalar @quotes_all);
+			    $mess = convert_quote($quotes_all[$quote_nb], $nick);
+			    $last_author = $authors[$quote_nb];
+		    }
 	    }
     }
     if ($mess ne "") {
