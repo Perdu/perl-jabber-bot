@@ -270,7 +270,7 @@ sub on_public
 	    }
     } elsif ($text eq "!related") {
 	    my $quote_nb = find_related_quote($prev_msg);
-	    if ($quote_nb != -1) {
+	    if ($quote_nb == -1) {
 		    $mess .= "Aucune citation trouvée";
 	    } else {
 		    $mess .= $quotes_all[$quote_nb];
