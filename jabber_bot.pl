@@ -308,7 +308,7 @@ sub on_public
 	    $mess = "Cap fixé à $min_number_for_talking";
     } elsif ($text =~ /^!battle (.*)/) {
 	    my @choices = split(' ', $1);
-	    my $rand = rand(scalar @choices);
+	    my $rand = int(rand(scalar @choices));
 	    $mess = "$nick : " . $choices[$rand];
 	    # Sometimes change answer
 	    $rand = int(rand(20));
@@ -346,10 +346,10 @@ sub on_public
 	    $mess = "$1 hérite des points blague de $2.";
     } elsif ($text eq "!philo") {
 	    # One random phrase from @philo
-	    $mess = $philo[rand(scalar @philo)];
+	    $mess = $philo[int(rand(scalar @philo))];
     } elsif ($text eq "!quote") {
 	    # One random phrase from $quotes{$quote_file}
-	    my $quote_nb = rand(scalar @quotes_all);
+	    my $quote_nb = int(rand(scalar @quotes_all));
 	    $last_author = $authors[$quote_nb];
 	    $mess = convert_quote($quotes_all[$quote_nb], $nick);
     } elsif ($text =~ /^!quote add ([-_\w]+) (.*)$/) {
@@ -529,7 +529,7 @@ sub on_public
 			    # No related quote found, give a random quote.
 			    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random))
 			    # in other words, number of quotes in quotes.txt
-			    $quote_nb = rand(scalar @quotes_all);
+			    $quote_nb = int(rand(scalar @quotes_all));
 			    $mess = convert_quote($quotes_all[$quote_nb], $nick);
 		    }
 		    $last_author = $authors[$quote_nb];
@@ -821,7 +821,7 @@ sub find_related_quote {
 		push @words, $1;
 	}
 	while (scalar @words != 0) {
-		my $r = rand(scalar @words);
+		my $r = int(rand(scalar @words));
 		my $word = $words[$r];
 		my @related_quotes;
 		for $i (0 .. $#quotes_all) {
@@ -830,7 +830,7 @@ sub find_related_quote {
 			}
 		}
 		if (scalar @related_quotes > 0) {
-			return $related_quotes[rand(scalar @related_quotes)];
+			return $related_quotes[int(rand(scalar @related_quotes))];
 		} else {
 			delete $words[$r];
 		}
