@@ -238,25 +238,25 @@ sub on_public
 	    $mess = $text;
     } elsif ($text eq "!help") {
 	    $mess = "Commandes disponibles :\n";
-	    $mess .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
-	    $mess .= "- !help : affiche cette aide.\n";
-	    $mess .= "- !pb : affiche les points-blague\n";
 	    $mess .= "- !alias <nick1> <nick2> : donne les points blague de nick2 à nick1\n";
 	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
 	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
 	    $mess .= "- !cyber [<proba>]: Active le cyber-mode cyber.\n";
+	    $mess .= "- !feature add|list : ajouter une demande de feature ou lister toutes les demandes\n";
+	    $mess .= "- !help : affiche cette aide.\n";
+	    $mess .= "- !ins <Pseudo> <insulte> (en message privé) : envoie anonymement une insulte à la personne ciblée.\n";
+	    $mess .= "- !isit <nick> : Deviner de qui est la citation précédente.\n";
+	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon\n";
+	    $mess .= "- !pb : affiche les points-blague\n";
 	    $mess .= "- !philo : Dicte une phrase philosophique profonde.\n";
 	    $mess .= "- !quote [add] [<nick>] [recherche]: Citation aléatoire.\n";
 	    $mess .= "- !quote list : Liste tous les auteurs\n";
 	    $mess .= "- !quotes <nick> : Donne toutes les citations d'un auteur\n";
 	    $mess .= "- !quote search <recherche> : recherche parmi toutes les citations\n";
 	    $mess .= "- !related : Citation en rapport\n";
-	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
-	    $mess .= "- !isit <nick> : Deviner de qui est la citation précédente.\n";
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
-	    $mess .= "- !link [lien] : raccourcit le lien passé en paramètre, ou le lien précédent sinon\n";
+	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
 	    $mess .= "- !! <nom> = <def> : ajouter une définition\n";
-	    $mess .= "- !feature add|list : ajouter une demande de feature ou lister toutes les demandes\n";
 	    $mess .= "- ?? <nom> : lire une définition";
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
