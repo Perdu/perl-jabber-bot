@@ -269,11 +269,11 @@ sub on_public
 		    $mess = "Non !";
 	    }
     } elsif ($text eq "!related") {
-	    my $quote = find_related_quote($prev_msg);
-	    if ($quote eq "") {
+	    my $quote_nb = find_related_quote($prev_msg);
+	    if ($quote_nb != -1) {
 		    $mess .= "Aucune citation trouvée";
 	    } else {
-		    $mess .= $quote;
+		    $mess .= $quotes_all[$quote_nb];
 		    chomp($mess);
 	    }
     } elsif ($text eq "!quote list") {
@@ -508,19 +508,19 @@ sub on_public
 	    my $rand = int(rand($min_number_for_talking));
 	    #print "$rand, $p\n";
 	    if ($rand < $p) {
-		    my $quote = find_related_quote($text);
-		    if ($quote ne "") {
-			    $mess = $quote;
+		    my $quote_nb = find_related_quote($text);
+		    if ($quote_nb != -1) {
+			    $mess = $quotes_all[$quote_nb];
 			    chomp($mess);
 			    # To do: find last author here
 		    } else {
 			    # No related quote found, give a random quote.
 			    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random))
 			    # in other words, number of quotes in quotes.txt
-			    my $quote_nb = rand(scalar @quotes_all);
+			    $quote_nb = rand(scalar @quotes_all);
 			    $mess = convert_quote($quotes_all[$quote_nb], $nick);
-			    $last_author = $authors[$quote_nb];
 		    }
+		    $last_author = $authors[$quote_nb];
 	    }
     }
     if ($mess ne "") {
@@ -797,6 +797,7 @@ sub cyberize {
 }
 
 sub find_related_quote {
+	# returns the index of a related quote in @quotes_all
 	my $msg = shift;
 	my @words;
 	# keep words longer than $MIN_WORD_LENGTH
@@ -807,9 +808,9 @@ sub find_related_quote {
 		my $r = rand(scalar @words);
 		my $word = $words[$r];
 		my @related_quotes;
-		foreach my $q (@quotes_all) {
-			if ($q =~ /$word/i) {
-				push @related_quotes, $q;
+		for $i (0 .. $#quotes_all) {
+			if ($quotes_all[$i] =~ /$word/i) {
+				push @related_quotes, $i;
 			}
 		}
 		if (scalar @related_quotes > 0) {
@@ -818,5 +819,5 @@ sub find_related_quote {
 			delete $words[$r];
 		}
 	}
-	return "";
+	return -1;
 }
