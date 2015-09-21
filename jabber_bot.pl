@@ -71,6 +71,7 @@ my $MAX_TITLE_SIZE = $C->{Other}->{max_title_size};
 my $MECHANIZE_TIMEOUT = $C->{Other}->{mechanize_timeout};
 my $MECHANIZE_MAX_SIZE = $C->{Other}->{mechanize_max_size};
 my $MIN_WORD_LENGTH = $C->{Other}->{min_word_length};
+my $JOKE_POINTS_MAX_DISPLAY = $C->{Other}->{joke_points_max_display};;
 
 ##################### Other variables ########################################
 
@@ -318,11 +319,16 @@ sub on_public
 	    }
     } elsif ($text eq "!pb") {
 	    return if (!defined $joke_points);
+	    my $i = 0;
 	    foreach my $k (sort { $joke_points->{$b} <=> $joke_points->{$a} } keys $joke_points) {
 		    my $tmp = $k;
 		    # Add underscore in the middle of nicks when listing joke points
 		    $tmp =~ s/(.)(.*)/$1_$2/;
 		    $mess .= "$tmp: $joke_points->{$k} points\n";
+		    $i++;
+		    if ($i == $JOKE_POINTS_MAX_DISPLAY) {
+			    last;
+		    }
 	    }
 	    chomp($mess);
     } elsif ($nick eq $admin && $text =~ /^!pb (.*) ([+-]\d+)/) {

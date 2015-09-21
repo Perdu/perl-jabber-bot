@@ -58,3 +58,5 @@ mechanize_max_size = 1000000
 min_word_length = 5
 # Sentence to write when a quote is requested and no quote has been issued yet.
 last_author = Le silence est d'or.
+# Maximum number of people to display with command !pb
+joke_points_max_display = 10
