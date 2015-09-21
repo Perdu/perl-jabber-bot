@@ -800,6 +800,9 @@ sub find_related_quote {
 	# returns the index of a related quote in @quotes_all
 	my $msg = shift;
 	my @words;
+	if ($msg eq "") {
+		return -1;
+	}
 	# keep words longer than $MIN_WORD_LENGTH
 	while ($msg =~ /(\w{$MIN_WORD_LENGTH,})([ ,\.]|$)/g) {
 		push @words, $1;
