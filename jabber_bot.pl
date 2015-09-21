@@ -529,9 +529,10 @@ sub on_public
 	    }
 	    message($mess);
 	    $joker = $own_nick;
+	    $prev_msg = $mess;
+    } else {
+	    $prev_msg = $text;
     }
-
-    $prev_msg = $text;
     $prev_nick = $nick;
 }
 
