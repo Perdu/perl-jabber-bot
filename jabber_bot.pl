@@ -359,10 +359,11 @@ sub on_public
 	    print $quotes_files_fh $quote_utf8 . "\n";
 	    close($quotes_files_fh);
 	    $mess = "Citation ajoutée pour $theme : $quote";
-    } elsif ($text =~ /^!quote search ([-_\w'’\s]+)\s*$/) {
+    } elsif ($text =~ /^!quote search ([-_\w'’*\s]+)\s*$/) {
 	    my $search = $1;
 	    my $nb_results = 0;
 	    $last_author = "";
+	    $search =~ s/\*/.*/;
 	    # Search for the keyword in all the quotes
 	    for $i (0 .. $#quotes_all) {
 		    if ($quotes_all[$i] =~ /$search/i) {
