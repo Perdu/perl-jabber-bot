@@ -362,14 +362,18 @@ sub on_public
     } elsif ($text =~ /^!quote search ([-_\w'’\s]+)\s*$/) {
 	    my $search = $1;
 	    my $nb_results = 0;
+	    $last_author = "";
 	    # Search for the keyword in all the quotes
-	    foreach my $q (@quotes_all) {
-		    if ($q =~ /$search/i) {
-			    $mess .= $q;
+	    for $i (0 .. $#quotes_all) {
+		    if ($quotes_all[$i] =~ /$search/i) {
+			    $mess .= $quotes_all[$i];
+			    $last_author .= $authors[$i] . ' ';
 			    $nb_results++;
 		    }
 	    }
 	    chomp($mess);
+	    # trim trailing space
+	    $last_author =~ s/\s+$//;
 	    if ($nb_results == 0) {
 		    $mess = "Aucune citation trouvée.";
 	    } elsif ($nb_results > 5) {
