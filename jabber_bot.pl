@@ -275,6 +275,7 @@ sub on_public
 		    $mess .= "Aucune citation trouvée";
 	    } else {
 		    $mess .= $quotes_all[$quote_nb];
+		    $last_author = $authors[$quote_nb];
 		    chomp($mess);
 	    }
     } elsif ($text eq "!quote list") {
