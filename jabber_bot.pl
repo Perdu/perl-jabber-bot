@@ -274,7 +274,7 @@ sub on_public
 	    if ($quote_nb == -1) {
 		    $mess .= "Aucune citation trouvée";
 	    } else {
-		    $mess .= $quotes_all[$quote_nb];
+		    $mess = convert_quote($quotes_all[$quote_nb], $nick);
 		    $last_author = $authors[$quote_nb];
 		    chomp($mess);
 	    }
