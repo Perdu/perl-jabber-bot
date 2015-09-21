@@ -825,7 +825,7 @@ sub find_related_quote {
 		my $word = $words[$r];
 		my @related_quotes;
 		for $i (0 .. $#quotes_all) {
-			if ($quotes_all[$i] =~ /$word/i) {
+			if (($quotes_all[$i] =~ /$word/i) and ($quotes_all[$i] ne $msg . "\n")) {
 				push @related_quotes, $i;
 			}
 		}
