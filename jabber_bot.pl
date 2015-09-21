@@ -832,7 +832,7 @@ sub find_related_quote {
 		if (scalar @related_quotes > 0) {
 			return $related_quotes[int(rand(scalar @related_quotes))];
 		} else {
-			delete $words[$r];
+			splice @words, $r, 1; # delete does not shrink the array
 		}
 	}
 	return -1;
