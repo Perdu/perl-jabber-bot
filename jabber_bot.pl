@@ -85,6 +85,7 @@ my $prev_joker = $joker;
 my $quiet = 0;
 my $cyber_proba = 0;
 my $prev_link = "";
+my $prev_related_quote_word = "";
 
 ############################# Main ###########################################
 
@@ -256,6 +257,7 @@ sub on_public
 	    $mess .= "- !related : Citation en rapport\n";
 	    $mess .= "- !speak less|more|<number> : diminue/augmente la fréquence des citations aléatoires\n";
 	    $mess .= "- !who : Indique de qui est la citation précédente.\n";
+	    $mess .= "- !why : Indique ce qui a provoqué la citation précédente.\n";
 	    $mess .= "- !! <nom> = <def> : ajouter une définition\n";
 	    $mess .= "- ?? <nom> : lire une définition";
     } elsif ($text eq "!who") {
@@ -270,7 +272,8 @@ sub on_public
 		    $mess = "Non !";
 	    }
     } elsif ($text eq "!related") {
-	    my $quote_nb = find_related_quote($prev_msg);
+	    my ($quote_nb, $tmp) = find_related_quote($prev_msg);
+	    $prev_related_quote_word = $tmp;
 	    if ($quote_nb == -1) {
 		    $mess .= "Aucune citation trouvée";
 	    } else {
@@ -278,6 +281,8 @@ sub on_public
 		    $last_author = $authors[$quote_nb];
 		    chomp($mess);
 	    }
+    } elsif ($text eq "!why") {
+	    $mess = $prev_related_quote_word;
     } elsif ($text eq "!quote list") {
 	    opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
 	    my @docs = grep{ !/^\..*/ } readdir($DIR);
@@ -522,7 +527,8 @@ sub on_public
 	    my $rand = int(rand($min_number_for_talking));
 	    #print "$rand, $p\n";
 	    if ($rand < $p) {
-		    my $quote_nb = find_related_quote($text);
+		    my ($quote_nb, $tmp) = find_related_quote($text);
+		    $prev_related_quote_word = $tmp;
 		    if ($quote_nb != -1) {
 			    $mess = $quotes_all[$quote_nb];
 			    chomp($mess);
@@ -832,10 +838,10 @@ sub find_related_quote {
 			}
 		}
 		if (scalar @related_quotes > 0) {
-			return $related_quotes[int(rand(scalar @related_quotes))];
+			return ($related_quotes[int(rand(scalar @related_quotes))], $word);
 		} else {
 			splice @words, $r, 1; # delete does not shrink the array
 		}
 	}
-	return -1;
+	return (-1, "unrelated");
 }
