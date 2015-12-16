@@ -391,7 +391,7 @@ sub on_public
 		    if (! -d "quotes/search") {
 			    mkdir "quotes/search";
 		    }
-		    my $filename = $1;
+		    my $filename = $search;
 		    # Strip non-ascii character from filename
 		    # (HTTP::Daemon does not handle them)
 		    $filename =~ s/[^[:ascii:]]//g;
