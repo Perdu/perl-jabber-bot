@@ -285,7 +285,7 @@ sub on_public
 	    $mess = $prev_related_quote_word;
     } elsif ($text eq "!quote list") {
 	    opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
-	    my @docs = grep{ !/^\..*/ } readdir($DIR);
+	    my @docs = sort { lc("$a") cmp lc("$b") } grep{ !/^\..*/ } readdir($DIR);
 	    foreach my $d (@docs) {
 		    my $nb_lines = 0;
 		    open(my $f, '<', "$dir_quotes/$d");
