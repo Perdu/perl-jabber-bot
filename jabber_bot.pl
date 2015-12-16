@@ -399,6 +399,7 @@ sub on_public
 			    $filename = random_string();
 		    }
 		    open(my $fh, ">", "quotes/search/" . $filename);
+		    utf8::encode($mess);
 		    print $fh $mess;
 		    close($fh);
 		    $mess = $QUOTES_EXTERNAL_URL . "search/" . $filename;
