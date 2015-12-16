@@ -260,7 +260,7 @@ sub on_public
 	    $mess .= "- ?? <nom> : lire une définition";
     } elsif ($text eq "!who") {
 	    $mess = "$last_author";
-    } elsif ($text =~ /!who\s+(\w+)/ || $text =~ /!isit\s+(\w+)/) {
+    } elsif ($text =~ /^!who\s+(\w+)/ || $text =~ /^!isit\s+(\w+)/) {
 	    if ($last_author eq "random" or $last_author eq "answer") {
 		    $mess = "Ne cherche pas, je n'en sais rien !";
 	    }
@@ -341,7 +341,7 @@ sub on_public
 	    } else {
 		    $mess = "$2 points blague pour $1 (" . $joke_points->{$1} . ")";
 	    }
-    } elsif ($nick eq $admin && $text =~ /!alias (.*) (.*)/) {
+    } elsif ($nick eq $admin && $text =~ /^!alias (.*) (.*)/) {
 	    $joke_points->{$1} += $joke_points->{$2};
 	    delete $joke_points->{$2};
 	    $mess = "$1 hérite des points blague de $2.";
@@ -437,7 +437,7 @@ sub on_public
 	    }
     } elsif ($text =~ /^!calc ([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
 	    $mess = "VTFF";
-    } elsif ($text =~ /!calc ([-]?[A-F\d]+\s*([+\-*\/]\s*[+-]?[A-F\d]+\s*)+)/) {
+    } elsif ($text =~ /^!calc ([-]?[A-F\d]+\s*([+\-*\/]\s*[+-]?[A-F\d]+\s*)+)/) {
 	my $res = $1;
 	my $scale = ($res =~ /\//)? "scale=3; " : "";
 	$mess = "$res = " . `echo "$scale$res" | bc`;
@@ -490,7 +490,7 @@ sub on_public
 		    $joke_points->{$joker} += $nb_d;
 		    print "+$nb_d points blague pour $joker (" . $joke_points->{$joker} . ")\n";
 	    }
-    } elsif ($text =~ /!!\s*([-_\w'’ ]+?)\s*=\s*(.*)\s*$/s) {
+    } elsif ($text =~ /^!!\s*([-_\w'’ ]+?)\s*=\s*(.*)\s*$/s) {
 	    my $name = $1;
 	    my $def = $2;
 	    if (-f "$dir_defs/$name") {
@@ -598,7 +598,7 @@ sub on_private
 		    } else {
 			    $mess = "$2 points blague pour $1 (" . $joke_points->{$1} . ")";
 		    }
-	    } elsif ($text =~ /!alias (.*) (.*)/) {
+	    } elsif ($text =~ /^!alias (.*) (.*)/) {
 		    $joke_points->{$1} += $joke_points->{$2};
 		    delete $joke_points->{$2};
 		    $mess = "$1 hérite des points blague de $2.";
