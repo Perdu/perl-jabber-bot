@@ -289,6 +289,7 @@ sub on_public
 		    }
 		    close($f);
 		    # Add underscore in the middle of the nick
+		    utf8::decode($d);
 		    $d =~ s/(.)(.*)/$1_$2/;
 		    $mess .= "$d ($nb_lines) ";
 	    }
