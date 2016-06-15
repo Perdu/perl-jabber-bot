@@ -6,7 +6,7 @@ connect anu;
 CREATE TABLE `quotes` (
        quote_id int(3) NOT NULL AUTO_INCREMENT,
        author varchar(100) NOT NULL,
-       details varchar(100) NOT NULL,
+       details varchar(100),
        quote varchar(10000) NOT NULL,
        `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`quote_id`)
