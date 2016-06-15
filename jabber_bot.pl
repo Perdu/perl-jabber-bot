@@ -828,17 +828,23 @@ sub cyberize {
 	return $new_mess;
 }
 
-sub find_related_quote {
-	# returns the index of a related quote in @quotes_all
+sub get_words {
 	my $msg = shift;
 	my @words;
-	if ($msg eq "") {
-		return -1;
-	}
 	# keep words longer than $MIN_WORD_LENGTH
 	while ($msg =~ /(\w{$MIN_WORD_LENGTH,})([ ,\.]|$)/g) {
 		push @words, $1;
 	}
+	return @words;
+}
+
+sub find_related_quote {
+	# returns the index of a related quote in @quotes_all
+	my $msg = shift;
+	if ($msg eq "") {
+		return -1;
+	}
+	my @words = get_words($msg);
 	while (scalar @words != 0) {
 		my $r = int(rand(scalar @words));
 		my $word = $words[$r];
