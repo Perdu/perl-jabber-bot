@@ -236,6 +236,8 @@ sub on_public
 	return;
     }
 
+    add_words_links($text);
+
     if (($joker ne "") && ($joker ne $nick) && ($text =~ /^[:xX]([Dd]+)/)) {
 	    my $nb_d = length $1;
 	    $joke_points->{$joker} += $nb_d;
@@ -899,4 +901,22 @@ sub open_db {
 				}
 			) or die "Could not connect to database $db_name\n $! \n $@\n$DBI::errstr";
 	return $dbh;
+}
+
+sub add_words_links {
+	my $text = shift;
+	my @words = get_words($text);
+	my $q_add_words_links = $dbh->prepare("
+		INSERT INTO words_links (word1, word2, occurences)
+		VALUES(?, ?, 1)
+		ON DUPLICATE KEY UPDATE occurences = occurences + 1;
+	");
+	foreach (@words) {
+		my $word1 = $_;
+		foreach (@words) {
+			if ($word1 ne $_) {
+				$q_add_words_links->execute($word1, $_);
+			}
+		}
+	}
 }
