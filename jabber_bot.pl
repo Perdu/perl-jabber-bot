@@ -365,10 +365,14 @@ sub on_public
 	    # One random phrase from @philo
 	    $mess = $philo[int(rand(scalar @philo))];
     } elsif ($text eq "!quote") {
+	    my $query = "SELECT author, quote from quotes ORDER BY RAND() LIMIT 1;";
+	    my ($author, $quote) = $dbh->selectrow_array($query);
+	    $last_author = $author;
+	    $mess = convert_quote($quote, $nick);
 	    # One random phrase from $quotes{$quote_file}
-	    my $quote_nb = int(rand(scalar @quotes_all));
-	    $last_author = $authors[$quote_nb];
-	    $mess = convert_quote($quotes_all[$quote_nb], $nick);
+	    #my $quote_nb = int(rand(scalar @quotes_all));
+	    #$last_author = $authors[$quote_nb];
+	    #$mess = convert_quote($quotes_all[$quote_nb], $nick);
     } elsif ($text =~ /^!quote add ([-_\w]+) (.*)$/) {
 	    my $theme = $1;
 	    my $quote = $2;
