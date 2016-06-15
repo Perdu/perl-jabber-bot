@@ -375,14 +375,38 @@ sub on_public
 	    chomp($quote);
 	    my $quote_utf8 = $quote;
 	    utf8::encode($quote_utf8);
-	    $quotes{$theme}[scalar @{ $quotes{$theme} }] = $quote;
-	    my $quote_nb = scalar @quotes_all;
-	    $quotes_all[$quote_nb] = $quote; # Also add quote to the array containing all quotes
-	    $authors[$quote_nb] = "$1";
-	    open (my $quotes_files_fh, '>>', "$dir_quotes/$theme") or die "could not open $dir_quotes/$theme";
-	    print $quotes_files_fh $quote_utf8 . "\n";
-	    close($quotes_files_fh);
-	    $mess = "Citation ajoutée pour $theme : $quote";
+	    my $q_quote_add_check = $dbh->prepare("
+		SELECT COUNT(*)
+		FROM quotes
+		WHERE author = ?
+		AND quote = ?");
+	    $q_quote_add_check->execute($theme, $quote_utf8);
+	    if ($dbh->selectrow_array($q_quote_add_check) > 0) {
+		    $mess = "Citation déjà connue.";
+	    } else {
+		    $dbh->selectrow_array("SELECT COUNT(*)");
+		    $quotes{$theme}[scalar @{ $quotes{$theme} }] = $quote;
+		    my $quote_nb = scalar @quotes_all;
+		    $quotes_all[$quote_nb] = $quote; # Also add quote to the array containing all quotes
+		    $authors[$quote_nb] = "$1";
+		    my $q_quote_add = $dbh->prepare("
+			INSERT INTO quotes (author, details, quote)
+			VALUES (?, ?, ?)");
+		    $q_quote_add->execute($theme, undef, $quote_utf8);
+		    my $q_quote_add_words = $dbh->prepare("
+			INSERT INTO words_in_quote (quote_id, word)
+			VALUES (?,?)");
+		    my @words = get_words($quote);
+		    my $prev_id = $dbh->{mysql_insertid};
+		    foreach (@words) {
+			    $q_quote_add_words->execute($prev_id, $_);
+		    }
+		    # Still add quotes to file for the moment
+		    open (my $quotes_files_fh, '>>', "$dir_quotes/$theme") or die "could not open $dir_quotes/$theme";
+		    print $quotes_files_fh $quote_utf8 . "\n";
+		    close($quotes_files_fh);
+		    $mess = "Citation ajoutée pour $theme : $quote";
+	    }
     } elsif ($text =~ /^!quote search ([-_\w'’*\s]+)\s*$/) {
 	    my $search = $1;
 	    my $nb_results = 0;
