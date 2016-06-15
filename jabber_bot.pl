@@ -19,6 +19,7 @@ use HTTP::Status;
 use HTTP::Date qw(time2str);
 use Config::Tiny;
 use Date::Parse;
+use DBI;
 
 binmode(STDOUT, ":utf8");
 
@@ -61,6 +62,13 @@ my $QUOTES_SERVER_PORT = $C->{Paths}->{quotes_server_port};
 my $QUOTES_EXTERNAL_URL = $C->{Paths}->{quotes_external_url} . ":$QUOTES_SERVER_PORT/";
 my $file_features = $C->{Paths}->{file_features};
 
+# Database
+my $db_name = $C->{Database}->{db_name};
+my $db_server = $C->{Database}->{db_server};
+my $db_user = $C->{Database}->{db_user};
+my $db_pass = $C->{Database}->{db_pass};
+my $db_port = $C->{Database}->{db_port};
+
 # Other
 my $own_nick = $C->{Other}->{bot_nick};
 my $admin = $C->{Other}->{admin};
@@ -86,6 +94,7 @@ my $quiet = 0;
 my $cyber_proba = 0;
 my $prev_link = "";
 my $prev_related_quote_word = "";
+my $dbh;
 
 ############################# Main ###########################################
 
@@ -96,6 +105,8 @@ if (-f $joke_points_file) {
 if (! -d "$dir_defs") {
 	mkdir "$dir_defs";
 }
+
+$dbh = open_db($db_name, $db_server, $db_port, $db_user, $db_pass);
 
 opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
 my @docs = readdir($DIR);
@@ -844,4 +855,14 @@ sub find_related_quote {
 		}
 	}
 	return (-1, "unrelated");
+}
+
+sub open_db {
+	my($db_name, $db_server, $db_port, $db_user, $db_pass) = @_;
+	my $dbh = DBI->connect( "DBI:mysql:database=$db_name;host=$db_server;port=$db_port",
+				$db_user, $db_pass, {
+					RaiseError => 1,
+				}
+			) or die "Could not connect to database $db_name\n $! \n $@\n$DBI::errstr";
+	return $dbh;
 }

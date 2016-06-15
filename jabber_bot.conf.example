@@ -33,6 +33,13 @@ quotes_external_url = http://YOUR_DOMAINE_NAME_OR_IP
 # File to store feature requests
 file_features = features.txt
 
+[Database]
+db_name = anu
+db_server = localhost
+db_user = anu
+db_pass =
+db_port =
+
 [Other]
 bot_nick = anu
 # The bot's admin's nick. He will have several supplementary rights on the bot.
