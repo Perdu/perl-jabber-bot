@@ -567,7 +567,7 @@ sub on_public
 	    $p += 1;
 	    my $rand = int(rand($min_number_for_talking));
 	    #print "$rand, $p\n";
-	    if ($rand < $p + 100000000000) {
+	    if ($rand < $p) {
 		    my ($quote, $tmp, $author) = find_related_quote($text);
 		    $prev_related_quote_word = $tmp;
 		    if ($quote) {
