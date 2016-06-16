@@ -864,7 +864,10 @@ sub get_words {
 	my @words;
 	# keep words longer than $MIN_WORD_LENGTH
 	while ($msg =~ /(\w{$MIN_WORD_LENGTH,})([ ,\.]|$)/g) {
-		push @words, $1;
+		my $word = $1;
+		if ( ! grep( /^$1$/i, @words ) ) {
+			push @words, $1;
+		}
 	}
 	return @words;
 }
