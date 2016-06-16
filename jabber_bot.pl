@@ -864,7 +864,7 @@ sub get_words {
 	utf8::decode($msg);
 	my @words;
 	# keep words longer than $MIN_WORD_LENGTH
-	while ($msg =~ /(\w{$MIN_WORD_LENGTH,})([ ,\.]|$)/g) {
+	while ($msg =~ /(\w{$MIN_WORD_LENGTH,})([ ,\.\-']|$)/g) {
 		my $word = $1;
 		if ( ! grep( /^$1$/i, @words ) ) {
 			push @words, $1;
