@@ -861,6 +861,7 @@ sub cyberize {
 
 sub get_words {
 	my $msg = shift;
+	utf8::decode($msg);
 	my @words;
 	# keep words longer than $MIN_WORD_LENGTH
 	while ($msg =~ /(\w{$MIN_WORD_LENGTH,})([ ,\.]|$)/g) {
