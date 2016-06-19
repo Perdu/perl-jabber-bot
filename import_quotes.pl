@@ -5,6 +5,7 @@ use warnings;
 use utf8;
 use DBI;
 use Config::Tiny;
+use Unicode::Collate;
 
 my $config_file = 'jabber_bot.conf';
 
@@ -22,6 +23,12 @@ my $db_pass = $C->{Database}->{db_pass};
 my $db_port = $C->{Database}->{db_port};
 
 my $dbh = open_db($db_name, $db_server, $db_port, $db_user, $db_pass);
+
+# We need an accent-insensitive case-insensitive compare for mysql
+my $insensitive_cmp = Unicode::Collate->new(
+	level         => 1,
+	normalization => undef
+);
 
 opendir(my $DIR, $dir_quotes) or die "cannot open directory $dir_quotes";
 my @docs = readdir($DIR);
@@ -64,6 +71,17 @@ sub open_db {
 	return $dbh;
 }
 
+sub known_word {
+	my @words = @{$_[0]};
+	my $word = $_[1];
+	foreach (@words) {
+		if ($insensitive_cmp->eq($word, $_)) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 sub get_words {
 	my $msg = shift;
 	utf8::decode($msg);
@@ -71,7 +89,7 @@ sub get_words {
 	# keep words longer than $MIN_WORD_LENGTH
 	while ($msg =~ /(\w{$MIN_WORD_LENGTH,})([ ,\.\-']|$)/g) {
 		my $word = $1;
-		if ( ! grep( /^$1$/i, @words ) ) {
+		if (! known_word(\@words, $word)) {
 			push @words, $word;
 		}
 	}
