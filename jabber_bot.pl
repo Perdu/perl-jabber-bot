@@ -29,6 +29,9 @@ binmode(STDOUT, ":utf8");
 # libcrypt-ssleay-perl(Debian) / perl-crypt-ssleay (archlinux) (for https links)
 # libconfig-tiny-perl (Debian) / perl-config-tiny (archlinux)
 # perl-timedate (archlinux)
+# ? (Debian) / perl-dbi (archlinux) + perl-dbd-mysql (archlinux)
+# mysql
+# perl-www-mechanize (archlinux)
 
 ##################### Configuration variables ################################
 
