@@ -33,6 +33,15 @@ binmode(STDOUT, ":utf8");
 # mysql
 # perl-www-mechanize (archlinux)
 
+# In case you got this error message (on Arch Linux):
+# "Invalid or unreadable path specified for ssl_ca_path. at
+# /usr/share/perl5/vendor_perl/XML/Stream.pm line 641, <$res> line 83."
+# Then edit /usr/share/perl5/vendor_perl/XML/Stream.pm and replace
+# $self->{SIDS}->{default}->{ssl_ca_path} = '';
+# with
+# $self->{SIDS}->{default}->{ssl_ca_path} = '/etc/ssl/certs';
+# (see https://aur.archlinux.org/packages/sendxmpp/?comments=all)
+
 ##################### Configuration variables ################################
 
 my $config_file = 'jabber_bot.conf';
