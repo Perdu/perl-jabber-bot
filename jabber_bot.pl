@@ -155,7 +155,7 @@ $SIG{TERM} = \&Stop;
 $SIG{INT} = \&Stop;
 
 # Connect and auth
-$Con->Connect(hostname => $con_server);
+$Con->Connect(hostname => $con_server, tls => 1);
 if($Con->Connected()) {
 	print "We are connected to the server...\n";
 } else {
