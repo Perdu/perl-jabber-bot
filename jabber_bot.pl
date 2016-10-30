@@ -297,13 +297,13 @@ sub on_public
 		    $mess = "Non !";
 	    }
     } elsif ($text eq "!related") {
-	    my ($quote, $tmp, $author) = find_related_quote($prev_msg);
+	    my ($quote_nb, $tmp) = find_related_quote($prev_msg);
 	    $prev_related_quote_word = $tmp;
-	    if (not $quote) {
+	    if ($quote_nb == -1) {
 		    $mess .= "Aucune citation trouvée";
 	    } else {
-		    $mess = convert_quote($quote, $nick);
-		    $last_author = $author;
+		    $mess = convert_quote($quotes_all[$quote_nb], $nick);
+		    $last_author = $authors[$quote_nb];
 		    chomp($mess);
 	    }
     } elsif ($text eq "!why") {
@@ -580,21 +580,20 @@ sub on_public
 	    my $rand = int(rand($min_number_for_talking));
 	    #print "$rand, $p\n";
 	    if ($rand < $p) {
-		    my ($quote, $tmp, $author) = find_related_quote($text);
+		    my ($quote_nb, $tmp) = find_related_quote($text);
 		    $prev_related_quote_word = $tmp;
-		    if ($quote) {
-			    $mess = convert_quote($quote, $nick);
-			    $last_author = $author;
+		    if ($quote_nb != -1) {
+			    $mess = $quotes_all[$quote_nb];
 			    chomp($mess);
 			    # To do: find last author here
 		    } else {
 			    # No related quote found, give a random quote.
 			    # scalar @{ $quotes[$index_random] } == size($quotes[$index_random))
 			    # in other words, number of quotes in quotes.txt
-			    my $quote_nb = int(rand(scalar @quotes_all));
+			    $quote_nb = int(rand(scalar @quotes_all));
 			    $mess = convert_quote($quotes_all[$quote_nb], $nick);
-			    $last_author = $authors[$quote_nb];
 		    }
+		    $last_author = $authors[$quote_nb];
 	    }
     }
     if ($mess ne "") {
@@ -886,33 +885,28 @@ sub get_words {
 }
 
 sub find_related_quote {
-	# So, for each word, we keep track of how often it is associated with
-	# other words. To find a related quote, we compute a score using all
-	# long words in the sentence for each possible quote. We keep the one
-	# with the highest score.
+	# returns the index of a related quote in @quotes_all
 	my $msg = shift;
 	if ($msg eq "") {
 		return -1;
 	}
 	my @words = get_words($msg);
-	my $query = "
-		SELECT quote, SUM(occurences)/COUNT(occurences) as score, author
-		FROM words_links, words_in_quote, quotes
-		WHERE words_links.word1 = words_in_quote.word
-		AND quotes.quote_id = words_in_quote.quote_id
-		AND word2 IN (?";
-	for (my $i = 0; $i < (scalar @words) - 1; $i++) {
-		$query .= ", ?";
+	while (scalar @words != 0) {
+		my $r = int(rand(scalar @words));
+		my $word = $words[$r];
+		my @related_quotes;
+		for $i (0 .. $#quotes_all) {
+			if (($quotes_all[$i] =~ /$word/i) and ($quotes_all[$i] ne $msg . "\n")) {
+				push @related_quotes, $i;
+			}
+		}
+		if (scalar @related_quotes > 0) {
+			return ($related_quotes[int(rand(scalar @related_quotes))], $word);
+		} else {
+			splice @words, $r, 1; # delete does not shrink the array
+		}
 	}
-	$query .= ")
-		GROUP BY words_in_quote.quote_id
-		ORDER BY score DESC
-		LIMIT 1;
-	";
-	my $q_related_quote = $dbh->prepare($query);
-	$q_related_quote->execute(@words);
-	my ($quote, $score, $author) = $q_related_quote->fetchrow_array();
-	return ($quote, $score, $author);
+	return (-1, "unrelated");
 }
 
 sub open_db {
