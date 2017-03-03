@@ -575,7 +575,9 @@ sub on_public
 	    my $rand = int(rand($min_number_for_talking));
 	    #print "$rand, $p\n";
 	    if ($rand < $p) {
-		    my ($quote_nb, $tmp) = find_related_quote($text, @prev_n_msg);
+		    my @copy_prev_n_msg = @prev_n_msg;
+		    unshift(@copy_prev_n_msg, $text);
+		    my ($quote_nb, $tmp) = find_related_quote($text, @copy_prev_n_msg);
 		    $prev_related_quote_word = $tmp;
 		    if ($quote_nb != -1) {
 			    $mess = $quotes_all[$quote_nb];
@@ -888,13 +890,13 @@ sub get_words {
 sub find_related_quote {
 	# returns the index of a related quote in @quotes_all
 	my $msg = shift;
-	my @prev_n_msg = shift;
+	my @prev_n_msg = @_;
 	if ($msg eq "") {
 		return -1;
 	}
-	unshift(@prev_n_msg, $msg);
 	foreach (@prev_n_msg) {
 		my $m = $_;
+		print "Searching: $m\n";
 		my @words = get_words($m);
 		while (scalar @words != 0) {
 			my $r = int(rand(scalar @words));
