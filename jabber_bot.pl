@@ -266,7 +266,6 @@ sub on_public
 	    $mess = "Commandes disponibles :\n";
 	    $mess .= "- !alias <nick1> <nick2> : donne les points blague de nick2 à nick1\n";
 	    $mess .= "- !battle : sélectionne un choix au hasard.\n";
-	    $mess .= "- !calc : Calcule une expression mathématique simple.\n";
 	    $mess .= "- !cyber [<proba>]: Active le cyber-mode cyber.\n";
 	    $mess .= "- !feature add|list : ajouter une demande de feature ou lister toutes les demandes\n";
 	    $mess .= "- !help : affiche cette aide.\n";
@@ -494,13 +493,6 @@ sub on_public
 	    } else {
 		    $mess = "Aucune citation trouvée pour $1";
 	    }
-    } elsif ($text =~ /^!calc ([-]?[A-F\d]+\s*([^]\s*[+-]?[A-F\d]+\s*)+)$/) {
-	    $mess = "VTFF";
-    } elsif ($text =~ /^!calc ([-]?[A-F\d]+\s*([+\-*\/]\s*[+-]?[A-F\d]+\s*)+)/) {
-	my $res = $1;
-	my $scale = ($res =~ /\//)? "scale=3; " : "";
-	$mess = "$res = " . `echo "$scale$res" | bc`;
-	chomp($mess);
     } elsif ($text =~ /^!cyber\s*0\s*$/) {
 	    $cyber_proba = 0;
 	    $mess = "Mode cyber désactivé.";
