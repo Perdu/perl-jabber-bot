@@ -91,7 +91,8 @@ my $MAX_TITLE_SIZE = $C->{Other}->{max_title_size};
 my $MECHANIZE_TIMEOUT = $C->{Other}->{mechanize_timeout};
 my $MECHANIZE_MAX_SIZE = $C->{Other}->{mechanize_max_size};
 my $MIN_WORD_LENGTH = $C->{Other}->{min_word_length};
-my $JOKE_POINTS_MAX_DISPLAY = $C->{Other}->{joke_points_max_display};;
+my $JOKE_POINTS_MAX_DISPLAY = $C->{Other}->{joke_points_max_display};
+my $NB_PREV_MSG = $C->{Other}->{nb_prev_msg_for_related};
 
 ##################### Other variables ########################################
 
@@ -158,6 +159,8 @@ my $p = 0;
 
 my $Con = new Net::Jabber::Client();
 my $prev_msg = "";
+my @prev_n_msg = ();
+my $nb_prev_msg = 0;
 my $prev_nick = "";
 my $join_time;
 
@@ -296,7 +299,7 @@ sub on_public
 		    $mess = "Non !";
 	    }
     } elsif ($text eq "!related") {
-	    my ($quote_nb, $tmp) = find_related_quote($prev_msg);
+	    my ($quote_nb, $tmp) = find_related_quote($prev_msg, @prev_n_msg);
 	    $prev_related_quote_word = $tmp;
 	    if ($quote_nb == -1) {
 		    $mess .= "Aucune citation trouvée";
@@ -572,7 +575,7 @@ sub on_public
 	    my $rand = int(rand($min_number_for_talking));
 	    #print "$rand, $p\n";
 	    if ($rand < $p) {
-		    my ($quote_nb, $tmp) = find_related_quote($text);
+		    my ($quote_nb, $tmp) = find_related_quote($text, @prev_n_msg);
 		    $prev_related_quote_word = $tmp;
 		    if ($quote_nb != -1) {
 			    $mess = $quotes_all[$quote_nb];
@@ -598,6 +601,12 @@ sub on_public
     } else {
 	    $prev_msg = $text;
     }
+    if ($nb_prev_msg >= $NB_PREV_MSG) {
+	    pop(@prev_n_msg);
+	    $nb_prev_msg--;
+    }
+    unshift(@prev_n_msg, $prev_msg);
+    $nb_prev_msg++;
     $prev_nick = $nick;
 }
 
@@ -879,23 +888,28 @@ sub get_words {
 sub find_related_quote {
 	# returns the index of a related quote in @quotes_all
 	my $msg = shift;
+	my @prev_n_msg = shift;
 	if ($msg eq "") {
 		return -1;
 	}
-	my @words = get_words($msg);
-	while (scalar @words != 0) {
-		my $r = int(rand(scalar @words));
-		my $word = $words[$r];
-		my @related_quotes;
-		for $i (0 .. $#quotes_all) {
-			if (($quotes_all[$i] =~ /$word/i) and ($quotes_all[$i] ne $msg . "\n")) {
-				push @related_quotes, $i;
+	unshift(@prev_n_msg, $msg);
+	foreach (@prev_n_msg) {
+		my $m = $_;
+		my @words = get_words($m);
+		while (scalar @words != 0) {
+			my $r = int(rand(scalar @words));
+			my $word = $words[$r];
+			my @related_quotes;
+			for $i (0 .. $#quotes_all) {
+				if (($quotes_all[$i] =~ /$word/i) and ($quotes_all[$i] ne $m . "\n")) {
+					push @related_quotes, $i;
+				}
 			}
-		}
-		if (scalar @related_quotes > 0) {
-			return ($related_quotes[int(rand(scalar @related_quotes))], $word);
-		} else {
-			splice @words, $r, 1; # delete does not shrink the array
+			if (scalar @related_quotes > 0) {
+				return ($related_quotes[int(rand(scalar @related_quotes))], $word);
+			} else {
+				splice @words, $r, 1; # delete does not shrink the array
+			}
 		}
 	}
 	return (-1, "unrelated");
