@@ -1,11 +1,8 @@
-# anu
-*A*wesome *N*etwork *U*ser
+# perl-jabber-bot
 
 # OUTDATED: use the python version instead: https://github.com/Perdu/panu
 
 An awesome Jabber bot. It can tell you how funny people in the room are, remember tons of quotes and definitions, shorten URL and display the page's title... How cool is that?
-
-Also, "anu" is almost ROT1 for "bot". Almost.
 
 
 Here's the help message (in French), which gives you a (non-exhaustive) overview of the functionalities:
